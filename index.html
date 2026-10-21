@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8-A LGS Ödev, Tekrar & Akıllı Tahta Sistemi</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="8-A Takip">
+<meta name="theme-color" content="#0f172a">
+<title>8-A LGS Takip</title>
 <!-- Canlı Senkronizasyon (MQTT over WebSockets) ve QR Kod Kütüphaneleri -->
 <script src="https://unpkg.com/mqtt@5.3.4/dist/mqtt.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -1617,9 +1621,13 @@
     document.getElementById('hwTopicInput').value = appState.currentTopic || 'Üslü İfadeler Kazanım Testi';
     document.getElementById('hwDateInput').value = appState.currentDate;
 
-    // URL'de ?teacher=2026 (Karekod ile telefondan giriş) var mı kontrol et
+    // URL'de ?teacher=2026 (Karekod ile telefondan giriş) veya daha önce yetkilendirilmiş telefon var mı kontrol et
     const params = new URLSearchParams(window.location.search);
     if (params.get('teacher') === TEACHER_PIN) {
+      localStorage.setItem('IS_TEACHER_PHONE_DEVICE', 'true');
+      isPhoneRemote = true;
+      setUnlockState(true, true);
+    } else if (localStorage.getItem('IS_TEACHER_PHONE_DEVICE') === 'true') {
       isPhoneRemote = true;
       setUnlockState(true, true);
     } else {
@@ -1686,7 +1694,9 @@
   }
 
   function lockBoardNow() {
-    setUnlockState(false);
+    if (!isPhoneRemote) {
+      setUnlockState(false);
+    }
     broadcastAction({ type: 'LOCK_BOARD' });
     showToast('🔒 Akıllı Tahta Kilitlendi! Öğrenciler hiçbir puanı değiştiremez.');
   }
