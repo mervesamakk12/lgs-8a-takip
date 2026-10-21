@@ -1,0 +1,2612 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8-A LGS Ödev, Tekrar & Akıllı Tahta Sistemi</title>
+<!-- Canlı Senkronizasyon (MQTT over WebSockets) ve QR Kod Kütüphaneleri -->
+<script src="https://unpkg.com/mqtt@5.3.4/dist/mqtt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #26354d;
+    --border: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #06b6d4;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 60%, #090d16 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* Üst Güvenlik ve Kurallar Bandı */
+  .top-rule-banner {
+    background: linear-gradient(90deg, #b91c1c, #d97706, #b91c1c);
+    color: #fff;
+    text-align: center;
+    padding: 8px 16px;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  }
+
+  .security-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+
+  .security-pill.locked {
+    background: #dc2626;
+    color: #fff;
+    animation: pulseLock 2s infinite;
+  }
+
+  .security-pill.unlocked {
+    background: #059669;
+    color: #fff;
+  }
+
+  @keyframes pulseLock {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  }
+
+  .sync-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+  }
+  .sync-dot.online {
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 18px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .class-badge {
+    background: linear-gradient(135deg, #f59e0b, #ea580c);
+    color: #fff;
+    font-weight: 900;
+    font-size: 24px;
+    padding: 10px 18px;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+  }
+
+  .brand-text h1 {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+  }
+
+  .brand-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Ders / Ödev Bilgi Barı */
+  .homework-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.7);
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .homework-bar label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #cbd5e1;
+    text-transform: uppercase;
+  }
+
+  .hw-input {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 220px;
+  }
+
+  .hw-date {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* Hızlı Araçlar & Sekmeler */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 9px 15px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tab-btn:hover {
+    background: var(--bg-card-hover);
+    color: #fff;
+  }
+
+  .tab-btn.active {
+    background: var(--primary);
+    border-color: #818cf8;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.45);
+  }
+
+  .teacher-savers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    border: none;
+    padding: 9px 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+
+  .action-btn:active {
+    transform: scale(0.96);
+  }
+
+  .btn-qr {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  }
+
+  .btn-lock {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  }
+
+  .btn-unlock {
+    background: linear-gradient(135deg, #10b981, #047857);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-detective {
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35);
+  }
+
+  .btn-board {
+    background: linear-gradient(135deg, #06b6d4, #0284c7);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35);
+  }
+
+  .btn-whatsapp-group {
+    background: linear-gradient(135deg, #22c55e, #15803d);
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.35);
+  }
+
+  /* Kilitli Mod Uyarı Bandı */
+  .locked-notice-bar {
+    background: rgba(220, 38, 38, 0.18);
+    border: 2px dashed #ef4444;
+    border-radius: 14px;
+    padding: 10px 16px;
+    margin-bottom: 14px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  body.is-locked .locked-notice-bar {
+    display: flex;
+  }
+
+  /* Kilitli modda butonların görünümü */
+  body.is-locked .chk-btn {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  body.is-locked .teacher-only {
+    display: none !important;
+  }
+
+  /* Özet İstatistik Kartları */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .stat-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover {
+    border-color: #64748b;
+  }
+
+  .stat-info span {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  .stat-info h3 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-top: 2px;
+  }
+
+  .stat-icon {
+    font-size: 26px;
+    opacity: 0.9;
+  }
+
+  /* Arama ve Filtre Çubuğu */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+
+  .search-input {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    min-width: 240px;
+    flex: 1;
+  }
+
+  .filter-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .filter-pill {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .filter-pill.active {
+    background: var(--primary);
+    border-color: #818cf8;
+    color: #fff;
+  }
+
+  /* Öğrenci Kontrol Listesi */
+  .student-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .student-row {
+    background: rgba(30, 41, 59, 0.92);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 42px 1.4fr 0.8fr 2.4fr auto;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+
+  .student-row:hover {
+    border-color: #475569;
+    background: rgba(38, 53, 77, 0.95);
+  }
+
+  .student-row.status-full {
+    border-color: #10b981;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.14), rgba(30, 41, 59, 0.92));
+  }
+
+  .student-row.status-half {
+    border-color: #f59e0b;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.14), rgba(30, 41, 59, 0.92));
+  }
+
+  .student-row.status-none {
+    border-color: #ef4444;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.16), rgba(30, 41, 59, 0.92));
+  }
+
+  .rank-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    color: #cbd5e1;
+  }
+
+  .rank-1 { background: linear-gradient(135deg, #facc15, #ca8a04); color: #000; border: none; }
+  .rank-2 { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #000; border: none; }
+  .rank-3 { background: linear-gradient(135deg, #f97316, #b45309); color: #fff; border: none; }
+
+  .student-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .student-name-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .school-no {
+    background: #0f172a;
+    color: #38bdf8;
+    border: 1px solid #0284c7;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 6px;
+  }
+
+  .student-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .streak-badge {
+    background: rgba(249, 115, 22, 0.2);
+    border: 1px solid #f97316;
+    color: #fb923c;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .streak-badge.hot {
+    background: linear-gradient(90deg, #ea580c, #dc2626);
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 10px rgba(234, 88, 12, 0.6);
+  }
+
+  .parent-subline {
+    font-size: 11px;
+    color: #94a3b8;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .rank-title-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #a5b4fc;
+  }
+
+  /* Puan Gösterimi */
+  .score-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-pill {
+    background: #0f172a;
+    border: 2px solid #4f46e5;
+    padding: 5px 12px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 82px;
+  }
+
+  .score-pill .pts {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .score-pill .lbl {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  /* Günlük Kontrol Butonları */
+  .check-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chk-btn {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: #0f172a;
+    color: #cbd5e1;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .chk-btn.full.active {
+    background: #059669;
+    border-color: #34d399;
+    color: #fff;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+  }
+
+  .chk-btn.half.active {
+    background: #d97706;
+    border-color: #fbbf24;
+    color: #fff;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+  }
+
+  .chk-btn.none.active {
+    background: #dc2626;
+    border-color: #f87171;
+    color: #fff;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+  }
+
+  .chk-btn.review.active {
+    background: #2563eb;
+    border-color: #60a5fa;
+    color: #fff;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+  }
+
+  .chk-btn.board.active {
+    background: #7c3aed;
+    border-color: #c084fc;
+    color: #fff;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+  }
+
+  /* Veli & İşlem Butonları */
+  .row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wa-btn {
+    background: #16a34a;
+    border: none;
+    color: #fff;
+    padding: 8px 11px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .wa-btn.secondary {
+    background: #0d9488;
+  }
+
+  .icon-btn {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Sekme İçerikleri */
+  .tab-panel {
+    display: none;
+  }
+  .tab-panel.active {
+    display: block;
+  }
+
+  /* Podyum & Liderlik */
+  .podium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .podium-card {
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    text-align: center;
+  }
+
+  .podium-card.gold { border-color: #facc15; box-shadow: 0 0 30px rgba(250, 204, 21, 0.2); }
+  .podium-card.silver { border-color: #cbd5e1; }
+  .podium-card.bronze { border-color: #f97316; }
+
+  .podium-medal {
+    font-size: 46px;
+    margin-bottom: 8px;
+  }
+
+  .podium-name {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+
+  .podium-score {
+    font-size: 30px;
+    font-weight: 900;
+    color: #facc15;
+    margin: 8px 0;
+  }
+
+  /* Ödül Pazarı */
+  .rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .reward-card {
+    background: rgba(30, 41, 59, 0.9);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .reward-icon { font-size: 40px; }
+  .reward-title { font-size: 18px; font-weight: 900; color: #fff; }
+  .reward-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+  .reward-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .reward-cost { font-size: 18px; font-weight: 900; color: #fbbf24; }
+  .buy-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  /* Üslü İfadeler Kural Kartı */
+  .formula-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .formula-card {
+    background: rgba(30, 41, 59, 0.95);
+    border: 2px solid #475569;
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .formula-card h3 {
+    color: #38bdf8;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .math-box {
+    background: #0f172a;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #fde68a;
+    margin-bottom: 8px;
+  }
+
+  .formula-tip { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
+
+  /* Veli İletişim Tablosu */
+  .parent-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(30, 41, 59, 0.9);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .parent-table th, .parent-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .parent-table th {
+    background: #0f172a;
+    color: #cbd5e1;
+    font-weight: 800;
+  }
+
+  /* Modal Pencereler */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal-box {
+    background: #1e293b;
+    border: 2px solid #475569;
+    border-radius: 22px;
+    max-width: 560px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .modal-header h2 { font-size: 19px; font-weight: 900; }
+
+  .close-modal {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 26px;
+    cursor: pointer;
+  }
+
+  .form-group { margin-bottom: 12px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #cbd5e1;
+    margin-bottom: 5px;
+  }
+
+  .form-control {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: #fff;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .spotlight-card {
+    background: radial-gradient(circle, #312e81 0%, #0f172a 100%);
+    border: 2px solid #818cf8;
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    margin: 12px 0;
+  }
+
+  .spotlight-student {
+    font-size: 28px;
+    font-weight: 900;
+    color: #facc15;
+    margin: 8px 0;
+  }
+
+  .spotlight-question {
+    font-size: 18px;
+    font-weight: 800;
+    color: #38bdf8;
+    background: rgba(15, 23, 42, 0.8);
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  /* QR Kod Kutusu */
+  .qr-wrapper {
+    background: #fff;
+    padding: 16px;
+    border-radius: 16px;
+    display: inline-block;
+    margin: 12px auto;
+  }
+
+  /* Bildirim (Toast) */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #10b981;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 2000;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  @media (max-width: 960px) {
+    .student-row {
+      grid-template-columns: 36px 1fr auto;
+      padding: 12px;
+    }
+    .check-buttons {
+      grid-column: 1 / -1;
+    }
+    .row-actions {
+      grid-column: 1 / -1;
+      justify-content: flex-end;
+    }
+    .chk-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 10px 8px;
+    }
+  }
+</style>
+</head>
+<body class="is-locked">
+
+<!-- Üst Güvenlik & Canlı Senkronizasyon Bandı -->
+<div class="top-rule-banner">
+  <div>🚨 İŞLEMSİZ ŞIK = ÖDEV YAPILMADI SAYILIR! | 🔥 3 Tam Ödev Serisi = +10 Bonus!</div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div class="sync-badge" title="Telefon ve Akıllı Tahta Canlı Eşitleme Durumu">
+      <span class="sync-dot" id="syncDot"></span>
+      <span id="syncStatusText">Canlı Senkron: Bağlanıyor...</span>
+    </div>
+    <div class="security-pill locked" id="securityStatusPill" onclick="handleLockButtonClick()">
+      🔒 TAHTA KİLİTLİ (Öğrenci Koruması Aktif)
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Kilitli Mod Bilgilendirme Bandı (Akıllı Tahtada Öğrenciler İçin) -->
+  <div class="locked-notice-bar">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:24px;">🛡️</span>
+      <div>
+        <b style="color:#fca5a5;">AKILLI TAHTA KORUMA MODU AKTİF (Sadece Görüntüleme)</b>
+        <div style="font-size:12px; color:#cbd5e1;">Öğrenciler bu ekrandan puan değiştiremez. Puan girişleri Merve Hoca'nın telefonundan (Karekod ile) veya Öğretmen Şifresi ile yapılır.</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="action-btn btn-qr" onclick="openQrModal()">📱 Karekod ile Telefondan Bağlan</button>
+      <button class="action-btn btn-unlock" onclick="openPinModal()">🔑 Öğretmen Şifresi ile Aç</button>
+    </div>
+  </div>
+
+  <!-- Üst Başlık -->
+  <header>
+    <div class="brand">
+      <div class="class-badge">8-A</div>
+      <div class="brand-text">
+        <h1>LGS Matematik Ödev, Tekrar & Akıllı Tahta Sistemi</h1>
+        <p id="deviceRoleSubtitle">🔒 Akıllı Tahta İzleyici Ekranı • Canlı Telefon Senkronizasyonlu</p>
+      </div>
+    </div>
+
+    <div class="homework-bar">
+      <div>
+        <label>Bugünün Ödevi / Konusu:</label><br>
+        <input type="text" id="hwTopicInput" class="hw-input" value="Üslü İfadeler Kazanım Testi" onchange="saveSettings()">
+      </div>
+      <div>
+        <label>Tarih:</label><br>
+        <input type="date" id="hwDateInput" class="hw-date" onchange="changeDate()">
+      </div>
+    </div>
+  </header>
+
+  <!-- Sekmeler ve Kurtarıcı Butonlar -->
+  <div class="toolbar">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('checkTab', this)">📋 Günlük Kontrol (32)</button>
+      <button class="tab-btn" onclick="switchTab('leaderboardTab', this)">🏆 Liderlik & Podyum</button>
+      <button class="tab-btn" onclick="switchTab('rewardsTab', this)">🎁 Ödül Pazarı & Çark</button>
+      <button class="tab-btn" onclick="switchTab('formulasTab', this)">⚡ Üslü İfadeler Kural Kartı</button>
+      <button class="tab-btn teacher-only" onclick="switchTab('parentsTab', this)">👨‍👩‍👧 Veli Rehberi (Gizli)</button>
+    </div>
+
+    <div class="teacher-savers">
+      <button class="action-btn btn-qr" onclick="openQrModal()">
+        📱 Karekod (Telefon Kumandası)
+      </button>
+      <button class="action-btn btn-lock teacher-only" onclick="lockBoardNow()" title="Akıllı tahtayı hemen kilitle">
+        🔒 Tahtayı Kilitle
+      </button>
+      <button class="action-btn btn-detective teacher-only" onclick="openDetectiveModal(true)">
+        🕵️ Dedektif (Kopya Avcısı)
+      </button>
+      <button class="action-btn btn-board teacher-only" onclick="openBoardPickerModal(true)">
+        🗣️ Tahtaya Kaldır
+      </button>
+      <button class="action-btn btn-whatsapp-group teacher-only" onclick="openGroupReportModal()">
+        📲 Veli Grubu Raporu
+      </button>
+    </div>
+  </div>
+
+  <!-- İstatistik Kartları -->
+  <div class="stats-row">
+    <div class="stat-card" onclick="setFilter('all')">
+      <div class="stat-info">
+        <span>8-A MEVCUDU</span>
+        <h3 id="statTotalStudents">32</h3>
+      </div>
+      <div class="stat-icon">👥</div>
+    </div>
+    <div class="stat-card" onclick="setFilter('full')">
+      <div class="stat-info">
+        <span>BUGÜN TAM YAPAN</span>
+        <h3 id="statFullCount" style="color:#10b981;">0</h3>
+      </div>
+      <div class="stat-icon">✅</div>
+    </div>
+    <div class="stat-card" onclick="setFilter('half')">
+      <div class="stat-info">
+        <span>UĞRAŞAN / EKSİK</span>
+        <h3 id="statHalfCount" style="color:#f59e0b;">0</h3>
+      </div>
+      <div class="stat-icon">⚠️</div>
+    </div>
+    <div class="stat-card" onclick="setFilter('none')">
+      <div class="stat-info">
+        <span>ÖDEV YAPMAYAN</span>
+        <h3 id="statNoneCount" style="color:#ef4444;">0</h3>
+      </div>
+      <div class="stat-icon">❌</div>
+    </div>
+    <div class="stat-card" onclick="setFilter('review')">
+      <div class="stat-info">
+        <span>TEKRAR / KART YAPAN</span>
+        <h3 id="statReviewCount" style="color:#38bdf8;">0</h3>
+      </div>
+      <div class="stat-icon">📘</div>
+    </div>
+  </div>
+
+  <!-- SEKME 1: GÜNLÜK KONTROL & YOKLAMA -->
+  <div id="checkTab" class="tab-panel active">
+    <div class="filter-bar">
+      <input type="text" id="studentSearchInput" class="search-input" placeholder="🔍 Öğrenci adı veya okul numarası ara..." oninput="renderStudentList()">
+      <div class="filter-pills">
+        <button class="filter-pill active" id="pill-all" onclick="setFilter('all')">Tümü</button>
+        <button class="filter-pill" id="pill-unmarked" onclick="setFilter('unmarked')">⏳ İşaretlenmeyenler</button>
+        <button class="filter-pill" id="pill-none" onclick="setFilter('none')">❌ Yapmayanlar</button>
+        <button class="filter-pill" id="pill-half" onclick="setFilter('half')">⚠️ Eksikler</button>
+        <button class="filter-pill" id="pill-full" onclick="setFilter('full')">✅ Tam Yapanlar</button>
+      </div>
+    </div>
+
+    <div class="student-list" id="studentListContainer"></div>
+  </div>
+
+  <!-- SEKME 2: 8-A VELİ İLETİŞİM REHBERİ (SADECE ÖĞRETMEN MODUNDA AÇIK) -->
+  <div id="parentsTab" class="tab-panel">
+    <div style="background:rgba(30,41,59,0.9); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h2 style="font-size:18px;">👨‍👩‍👧 8-A Sınıfı Tam Veli İletişim Listesi (Gizli Sekme)</h2>
+        <p style="font-size:13px; color:var(--text-muted);">Bu sekme akıllı tahta kilitliyken öğrencilere görünmez. Sadece telefonunuzda veya öğretmen kilidi açıkken görünür.</p>
+      </div>
+      <button class="action-btn btn-unlock" onclick="openAddStudentModal()">➕ Yeni Öğrenci Ekle</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="parent-table">
+        <thead>
+          <tr>
+            <th>Okul No</th>
+            <th>Öğrenci Ad Soyad</th>
+            <th>Puan</th>
+            <th>1. Veli (Yakınlık & Tel)</th>
+            <th>2. Veli (Yakınlık & Tel)</th>
+            <th>Hızlı WhatsApp</th>
+          </tr>
+        </thead>
+        <tbody id="parentTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SEKME 3: LİDERLİK & RÜTBELER -->
+  <div id="leaderboardTab" class="tab-panel">
+    <div class="podium-grid" id="podiumContainer"></div>
+    <div style="background: rgba(30,41,59,0.85); border:1px solid var(--border); border-radius:16px; padding:18px;">
+      <h3 style="margin-bottom:12px; color:#facc15;">🎖️ Rütbe Sistemi Nasıl İşler?</h3>
+      <div style="display:flex; flex-wrap:wrap; gap:14px; font-size:14px;">
+        <span>🌱 <b>0 - 39 Puan:</b> Başlangıç Adayı</span>
+        <span>⚡ <b>40 - 99 Puan:</b> Kazanım Avcısı</span>
+        <span>🔥 <b>100 - 199 Puan:</b> Üslü İfade Ustası</span>
+        <span>💎 <b>200 - 299 Puan:</b> Yeni Nesil Fatihi</span>
+        <span>👑 <b>300+ Puan:</b> 8-A LGS Efsanesi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEKME 4: ÖDÜL PAZARI & ŞANS ÇARKI -->
+  <div id="rewardsTab" class="tab-panel">
+    <div class="rewards-grid">
+      <div class="reward-card">
+        <div>
+          <div class="reward-icon">🎟️</div>
+          <div class="reward-title">1 Soru / Pas Jokeri</div>
+          <p class="reward-desc">Derste tahtaya kalktığında veya kuizde zorlandığı 1 soruyu pas geçme hakkı sağlar.</p>
+        </div>
+        <div class="reward-footer">
+          <span class="reward-cost">⭐ 60 Puan</span>
+          <button class="buy-btn" onclick="openRedeemModal('1 Soru / Pas Jokeri', 60)">Ödülü Kullandır</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div>
+          <div class="reward-icon">🪑</div>
+          <div class="reward-title">Kanka Jokeri (1 Ders)</div>
+          <p class="reward-desc">1 ders boyunca sınıf düzenini bozmamak şartıyla istediği arkadaşıyla yan yana oturma hakkı.</p>
+        </div>
+        <div class="reward-footer">
+          <span class="reward-cost">⭐ 90 Puan</span>
+          <button class="buy-btn" onclick="openRedeemModal('Kanka Jokeri (1 Ders)', 90)">Ödülü Kullandır</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div>
+          <div class="reward-icon">💡</div>
+          <div class="reward-title">Hoca İpucu Jokeri</div>
+          <p class="reward-desc">Kazanım testinde veya sınıf içi kuizde öğretmenden 1 sorunun çözüm adımını alma hakkı.</p>
+        </div>
+        <div class="reward-footer">
+          <span class="reward-cost">⭐ 100 Puan</span>
+          <button class="buy-btn" onclick="openRedeemModal('Hoca İpucu Jokeri', 100)">Ödülü Kullandır</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div>
+          <div class="reward-icon">🛡️</div>
+          <div class="reward-title">Yarım Ödev Muafiyeti</div>
+          <p class="reward-desc">Sadece 1 defaya mahsus verilen testin yarısını çözerek Tam Ödev puanı alma hakkı.</p>
+        </div>
+        <div class="reward-footer">
+          <span class="reward-cost">⭐ 140 Puan</span>
+          <button class="buy-btn" onclick="openRedeemModal('Yarım Ödev Muafiyeti', 140)">Ödülü Kullandır</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div>
+          <div class="reward-icon">🎡</div>
+          <div class="reward-title">8-A Şans Çarkı Çevirme</div>
+          <p class="reward-desc">Sürpriz ödül çarkını çevirir! (+150 Bonus Puan, Kantin Ödülü, Pas Jokeri, Kankayla Oturma)</p>
+        </div>
+        <div class="reward-footer">
+          <span class="reward-cost">⭐ 120 Puan</span>
+          <button class="buy-btn" onclick="openWheelModal()">Çarkı Aç</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div>
+          <div class="reward-icon">🍫</div>
+          <div class="reward-title">Haftanın Şampiyon Ödülü</div>
+          <p class="reward-desc">Hedef puana ulaşan öğrenciye özel çikolata/kantin ödülü ve Veli Tebrik Mesajı.</p>
+        </div>
+        <div class="reward-footer">
+          <span class="reward-cost">⭐ 200 Puan</span>
+          <button class="buy-btn" onclick="openRedeemModal('Haftanın Şampiyon Ödülü', 200)">Ödülü Kullandır</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEKME 5: ÜSLÜ İFADELER KURAL KARTI -->
+  <div id="formulasTab" class="tab-panel">
+    <div style="margin-bottom:14px;">
+      <h2 style="font-size:20px;">⚡ Üslü İfadeler "Boğaz Kurtaran" Hızlı Kural Kartı</h2>
+      <p style="color:var(--text-muted); font-size:13px;">Derste soru çözerken tekrar anlatmak yerine öğrencinin hangi kurala bakması gerektiğini buradan gösterin.</p>
+    </div>
+    <div class="formula-grid">
+      <div class="formula-card">
+        <h3>1️⃣ İşaret Belirleme (Parantez Tuzağı)</h3>
+        <div class="math-box">(-2)⁴ = +16 &nbsp;&nbsp;|&nbsp;&nbsp; -2⁴ = -16</div>
+        <p class="formula-tip">Çift üs sadece <b>parantezin dışındaysa</b> eksiyi artı yapar! Parantez yoksa veya çift üs içerideyse sonuç negatif kalır.</p>
+      </div>
+
+      <div class="formula-card">
+        <h3>2️⃣ Negatif Üs (Ters Çevir!)</h3>
+        <div class="math-box">a⁻ⁿ = 1 / aⁿ &nbsp;&nbsp;|&nbsp;&nbsp; (2/3)⁻² = (3/2)² = 9/4</div>
+        <p class="formula-tip">Üstteki eksi işareti sayıyı negatif yapmaz! Sadece sayıyı <b>pay ve paydasını takla attırır</b>.</p>
+      </div>
+
+      <div class="formula-card">
+        <h3>3️⃣ Üssün Üssü & Taban Değiştirme</h3>
+        <div class="math-box">(aⁿ)ᵐ = aⁿ·ᵐ &nbsp;&nbsp;|&nbsp;&nbsp; 8⁴ = (2³)⁴ = 2¹²</div>
+        <p class="formula-tip">4, 8, 16, 32 gördüğünde hemen <b>2'nin kuvveti</b>; 9, 27, 81 gördüğünde <b>3'ün kuvveti</b> olarak yaz!</p>
+      </div>
+
+      <div class="formula-card">
+        <h3>4️⃣ Çarpma İşlemi (2 Kural)</h3>
+        <div class="math-box">2⁵ · 2³ = 2⁸ &nbsp;&nbsp;|&nbsp;&nbsp; 2⁴ · 5⁴ = 10⁴</div>
+        <p class="formula-tip">• Tabanlar aynıysa <b>üsleri TOPLA</b>.<br>• Üsler aynıysa <b>tabanları ÇARP</b>.</p>
+      </div>
+
+      <div class="formula-card">
+        <h3>5️⃣ Bölme İşlemi (Alttaki Üs İşaret Değiştirir)</h3>
+        <div class="math-box">2⁷ / 2³ = 2⁷⁻³ = 2⁴ &nbsp;&nbsp;|&nbsp;&nbsp; 5⁴ / 5⁻² = 5⁴⁺² = 5⁶</div>
+        <p class="formula-tip">Tabanlar aynıysa payın üssünden paydanın üssünü çıkar. <b>Kısa yol:</b> Alttaki üssün işaretini değiştirip yukarı çıkar!</p>
+      </div>
+
+      <div class="formula-card">
+        <h3>6️⃣ Toplama & Çıkarma (Ortak Parantez)</h3>
+        <div class="math-box">3 · 2⁵ + 4 · 2⁵ = (3 + 4) · 2⁵ = 7 · 2⁵</div>
+        <p class="formula-tip">Üslü ifadelerde doğrudan toplama formülü yoktur! Üsler eşitlenir ve <b>elma hesabıyla</b> katsayılar toplanır.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alt Yedekleme Çubuğu (Sadece Öğretmen Modunda) -->
+  <div class="teacher-only" style="margin-top:28px; padding-top:16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:13px; color:var(--text-muted);">
+    <div>💾 Tüm değişiklikler hem cihazınıza hem de canlı senkronizasyon odasına otomatik kaydedilir.</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="chk-btn" onclick="exportData()">📥 Yedek İndir (.json)</button>
+      <button class="chk-btn" onclick="document.getElementById('importFile').click()">📤 Yedek Yükle</button>
+      <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importData(event)">
+      <button class="chk-btn" onclick="resetTodayStatuses()">🔄 Bugünün İşaretlerini Sıfırla</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: KAREKOD (QR) & TELEFON SENKRONİZASYONU -->
+<div class="modal-overlay" id="qrModal">
+  <div class="modal-box" style="text-align:center;">
+    <div class="modal-header">
+      <h2>📱 Karekod ile Telefon Kumandası & Canlı Eşitleme</h2>
+      <button class="close-modal" onclick="closeModal('qrModal')">&times;</button>
+    </div>
+
+    <p style="font-size:13px; color:#cbd5e1; line-height:1.5; margin-bottom:10px;">
+      Telefonunuzun kamerasıyla aşağıdaki karekodu okutun. Telefonunuzda doğrudan <b>🔓 Öğretmen Kumanda Modu</b> açılır. Telefondan verdiğiniz her puan <b>aynı saniyede Akıllı Tahtada</b> görünür, tahta ise öğrencilere kilitli kalır!
+    </p>
+
+    <div class="qr-wrapper">
+      <div id="qrcodeContainer"></div>
+    </div>
+
+    <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; padding:12px; margin-top:10px; text-align:left; font-size:12px;">
+      <div style="margin-bottom:6px; color:#facc15; font-weight:800;">🔗 Senkronizasyon Oda Kodu: <span id="roomCodeDisplay" style="color:#fff;"></span></div>
+      <div style="color:var(--text-muted); margin-bottom:8px;">
+        Eğer akıllı tahtada dosyayı flaş bellekten (internetsiz adres olarak) açtıysanız, telefonunuzdan canlı yönetmek için aşağıdaki web adresini kullanabilirsiniz:
+      </div>
+      <input type="text" id="qrTargetUrlInput" class="form-control" style="font-size:12px; margin-bottom:8px;" onchange="updateQrCodeUrl()">
+      <div style="display:flex; gap:8px; justify-content:space-between; flex-wrap:wrap;">
+        <button class="chk-btn" onclick="copyTeacherLink()">📋 Telefon Linkini Kopyala</button>
+        <button class="chk-btn full" onclick="pushSyncNow()">🔄 Şimdi Zorla Eşitle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ÖĞRETMEN ŞİFRESİ (PIN) GİRİŞİ -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal-box" style="max-width:400px; text-align:center;">
+    <div class="modal-header">
+      <h2>🔑 Öğretmen Kilidini Aç</h2>
+      <button class="close-modal" onclick="closeModal('pinModal')">&times;</button>
+    </div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+      Akıllı tahtada işlem yapmak için öğretmen PIN şifrenizi girin.<br>
+      <span style="color:#facc15; font-size:12px;">(3 dakika işlem yapılmazsa tahta kendini otomatik tekrar kilitler)</span>
+    </p>
+    <input type="password" id="pinInput" class="form-control" placeholder="Şifrenizi girin..." style="text-align:center; font-size:22px; letter-spacing:6px; margin-bottom:14px;" onkeydown="if(event.key==='Enter') verifyPin()">
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button class="action-btn btn-unlock" style="width:100%; justify-content:center;" onclick="verifyPin()">🔓 Kilidi Aç</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 1: DEDEKTİF KONTROLÜ (KOPYA AVCISI) -->
+<div class="modal-overlay" id="detectiveModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>🕵️ Dedektif Kontrolü (Cevap Anahtarı Avcısı)</h2>
+      <button class="close-modal" onclick="closeModal('detectiveModal')">&times;</button>
+    </div>
+    <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">
+      Ödevini "Tam Yaptı" veya "Uğraştı" olarak işaretlediğiniz öğrenciler arasından rastgele biri ve rastgele bir soru seçilir. Soruyu nasıl çözdüğünü açıklarsa <b>+5 Bonus</b> alır, cevap anahtarından geçirdiyse yakalanır!
+    </p>
+    <div class="spotlight-card">
+      <div style="font-size:13px; color:#cbd5e1; font-weight:700;">SEÇİLEN ÖĞRENCİ</div>
+      <div class="spotlight-student" id="detectiveStudentName">Hazır...</div>
+      <div class="spotlight-question" id="detectiveQuestionNum">❓ Soru Seçiliyor</div>
+    </div>
+    <div class="teacher-only" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px;">
+      <button class="action-btn btn-detective" onclick="spinDetective(true)">🎲 Rastgele Öğrenci & Soru Seç</button>
+      <button class="action-btn" style="background:#10b981;" onclick="rewardDetectiveStudent(5)">👏 Açıkladı (+5 Bonus Ver)</button>
+      <button class="action-btn" style="background:#ef4444;" onclick="punishDetectiveStudent()">🚨 Kopya / İşlemsiz (Ödevi İptal Et)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: TAHTAYA ÖĞRENCİ KALDIR (BOĞAZ KURTARAN) -->
+<div class="modal-overlay" id="boardPickerModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>🗣️ Boğaz Kurtaran: Tahtaya Öğrenci Kaldır</h2>
+      <button class="close-modal" onclick="closeModal('boardPickerModal')">&times;</button>
+    </div>
+    <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">
+      Soruyu siz anlatmayın! Rastgele bir öğrenci seçin, tahtada (veya oturduğu yerden) sizin yönlendirmenizle çözsün ve <b>+5 Tahta Puanı</b> kazansın.
+    </p>
+    <div class="spotlight-card">
+      <div style="font-size:13px; color:#cbd5e1; font-weight:700;">SIRA SENDE:</div>
+      <div class="spotlight-student" id="boardStudentName">Seçmek için tıklayın</div>
+      <div style="font-size:14px; color:#a5b4fc; margin-top:6px;" id="boardStudentStats"></div>
+    </div>
+    <div class="teacher-only" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px;">
+      <button class="action-btn btn-board" onclick="spinBoardStudent(true)">🎯 Rastgele Öğrenci Seç</button>
+      <button class="action-btn" style="background:#10b981;" onclick="giveBoardBonus()">✅ Soruyu Çözdü (+5 Puan Ver)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 3: VELİ GRUBU TOPLU WHATSAPP RAPORU -->
+<div class="modal-overlay" id="groupReportModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>📲 8-A Veli WhatsApp Grubu Raporu</h2>
+      <button class="close-modal" onclick="closeModal('groupReportModal')">&times;</button>
+    </div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">
+      Aşağıdaki rapor bugünkü işaretlemelerinize göre otomatik oluşturulmuştur. Kopyalayıp doğrudan 8-A WhatsApp veli grubuna yapıştırabilirsiniz:
+    </p>
+    <textarea id="groupReportText" class="form-control" style="min-height:240px; font-family:monospace; font-size:13px;" readonly></textarea>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px;">
+      <button class="action-btn btn-whatsapp-group" onclick="copyGroupReport()">📋 Raporu Kopyala</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 4: YENİ ÖĞRENCİ EKLE -->
+<div class="modal-overlay" id="addStudentModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>➕ 8-A Yeni Öğrenci Ekle</h2>
+      <button class="close-modal" onclick="closeModal('addStudentModal')">&times;</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 2fr; gap:10px;">
+      <div class="form-group">
+        <label>Okul No:</label>
+        <input type="text" id="newStudentNo" class="form-control" placeholder="Örn: 512">
+      </div>
+      <div class="form-group">
+        <label>Öğrenci Adı Soyadı:</label>
+        <input type="text" id="newStudentName" class="form-control" placeholder="Ad Soyad">
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="form-group">
+        <label>1. Veli Ad Soyad & Yakınlık:</label>
+        <input type="text" id="newParent1Name" class="form-control" placeholder="Örn: Ahmet Yılmaz (Baba)">
+      </div>
+      <div class="form-group">
+        <label>1. Veli Telefon:</label>
+        <input type="text" id="newParent1Phone" class="form-control" placeholder="05xxxxxxxxx">
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="form-group">
+        <label>2. Veli Ad Soyad & Yakınlık:</label>
+        <input type="text" id="newParent2Name" class="form-control" placeholder="Örn: Ayşe Yılmaz (Anne)">
+      </div>
+      <div class="form-group">
+        <label>2. Veli Telefon:</label>
+        <input type="text" id="newParent2Phone" class="form-control" placeholder="05xxxxxxxxx">
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+      <button class="action-btn btn-unlock" onclick="addSingleStudent()">📥 Öğrenciyi Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 5: ÖDÜL KULLANDIRMA / ŞANS ÇARKI -->
+<div class="modal-overlay" id="redeemModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="redeemModalTitle">🎁 Ödül Kullandır</h2>
+      <button class="close-modal" onclick="closeModal('redeemModal')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label>Ödülü Kullanacak Öğrenciyi Seçin:</label>
+      <select id="redeemStudentSelect" class="form-control"></select>
+    </div>
+    <div id="wheelSection" style="display:none; text-align:center; margin:16px 0;">
+      <div class="spotlight-card">
+        <div style="font-size:13px; color:#cbd5e1;">ÇARK SONUCU:</div>
+        <div class="spotlight-student" id="wheelResultText">🎡 Çevirmeye Hazır!</div>
+      </div>
+      <button class="action-btn btn-detective" style="margin:0 auto;" onclick="spinRewardWheel()">🎡 Çarkı Çevir (120 Puan Düşer)</button>
+    </div>
+    <div id="standardRedeemSection" style="display:flex; justify-content:flex-end; margin-top:16px;">
+      <button class="action-btn btn-unlock" onclick="confirmRedeem()">✅ Puanı Düş ve Ödülü Ver</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 6: ÖĞRENCİ DÜZENLE -->
+<div class="modal-overlay" id="editStudentModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>✏️ Öğrenci & Veli Bilgisi Düzenle</h2>
+      <button class="close-modal" onclick="closeModal('editStudentModal')">&times;</button>
+    </div>
+    <input type="hidden" id="editStudentId">
+    <div style="display:grid; grid-template-columns:1fr 2fr; gap:10px;">
+      <div class="form-group">
+        <label>Okul No:</label>
+        <input type="text" id="editStudentNo" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Öğrenci Adı Soyadı:</label>
+        <input type="text" id="editStudentName" class="form-control">
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="form-group">
+        <label>1. Veli Adı (Yakınlık):</label>
+        <input type="text" id="editParent1Name" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>1. Veli Telefon:</label>
+        <input type="text" id="editParent1Phone" class="form-control">
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="form-group">
+        <label>2. Veli Adı (Yakınlık):</label>
+        <input type="text" id="editParent2Name" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>2. Veli Telefon:</label>
+        <input type="text" id="editParent2Phone" class="form-control">
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="form-group">
+        <label>Toplam Puanı:</label>
+        <input type="number" id="editStudentScore" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Ateş Serisi (Üst Üste Ödev):</label>
+        <input type="number" id="editStudentStreak" class="form-control">
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:14px;">
+      <button class="chk-btn none" onclick="deleteStudent()">🗑️ Öğrenciyi Sil</button>
+      <button class="action-btn btn-whatsapp-group" onclick="saveStudentEdit()">💾 Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">İşlem Başarılı!</div>
+
+<script>
+  const STORAGE_KEY = 'LGS_8A_ODEV_TAKIP_V3_SYNC';
+  const TEACHER_PIN = '2026'; // Varsayılan öğretmen şifresi
+  const DEFAULT_CLOUD_URL = 'https://mervesamakk12.github.io/lgs-8a-takip/';
+  const SYNC_ROOM_ID = 'merve_samak_8a_lgs_2026';
+  const MQTT_TOPIC_STATE = `ms_akademi/${SYNC_ROOM_ID}/state`;
+  const MQTT_TOPIC_ACTION = `ms_akademi/${SYNC_ROOM_ID}/action`;
+
+  // 8A_VELİ_İLETİŞİM_TAM_LİSTE.xlsx dosyasından alınan gerçek 8-A sınıf listesi (32 Öğrenci)
+  const defaultStudents8A = [
+    { id: 'no_94',   no: '94',   name: 'SALİM GÜNGÖRDİ',         p1Name: 'YASİN GÜNGÖRDİ (Baba)',        p1Phone: '05425722000', p2Name: '',                              p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_107',  no: '107',  name: 'NEHİR YABATU',           p1Name: 'İBRAHİM YABATU (Baba)',        p1Phone: '05469044408', p2Name: 'SELMA YABATU (Anne)',           p2Phone: '05439044434', score: 0, streak: 0 },
+    { id: 'no_126',  no: '126',  name: 'AHMET ÇELİKLİ',          p1Name: 'BİŞAR ÇELİKLİ (Baba)',         p1Phone: '05435278344', p2Name: '',                              p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_158',  no: '158',  name: 'AHMET POLAT',            p1Name: 'DENİZ POLAT (Baba)',           p1Phone: '05439443357', p2Name: 'DİLŞAH POLAT (Anne)',           p2Phone: '05413122896', score: 0, streak: 0 },
+    { id: 'no_160',  no: '160',  name: 'NİSANUR İKİER',          p1Name: 'HALİT İKİER (Baba)',           p1Phone: '05428185583', p2Name: 'MERYEM İKİER (Anne)',           p2Phone: '05428186583', score: 0, streak: 0 },
+    { id: 'no_193',  no: '193',  name: 'EVA HAYDAR',             p1Name: 'ŞİRİN HAYDAR (Anne)',          p1Phone: '05365894360', p2Name: 'MUHAMMED HAYDAR (Baba)',        p2Phone: '05382282219', score: 0, streak: 0 },
+    { id: 'no_262',  no: '262',  name: 'ABDULĞANİ ALKAN',        p1Name: 'SALAHADDİN ALKAN (Baba)',      p1Phone: '05422470808', p2Name: '',                              p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_396',  no: '396',  name: 'DİJLE NEVAL LUZUM',      p1Name: 'AYSEL LUZUM (Anne)',           p1Phone: '05428408663', p2Name: 'EYÜP LUZUM (Baba)',             p2Phone: '05415873328', score: 0, streak: 0 },
+    { id: 'no_421',  no: '421',  name: 'ECRİN TURAN',            p1Name: 'AYŞE TURAN (Anne)',            p1Phone: '05435102852', p2Name: 'MEHMET KOYUNCU',                p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_424',  no: '424',  name: 'EDA YAĞMUR ELİŞ',        p1Name: 'MEHMET ELİŞ (Baba)',           p1Phone: '05422739736', p2Name: 'BESRA ELİŞ (Anne)',             p2Phone: '05416427271', score: 0, streak: 0 },
+    { id: 'no_505',  no: '505',  name: 'ENES KALUL',             p1Name: 'EYLEM KALUL (Abla)',           p1Phone: '05424432729', p2Name: 'TELLİ KALUL (Anne)',            p2Phone: '05455702065', score: 0, streak: 0 },
+    { id: 'no_602',  no: '602',  name: 'İLKNUR DEVECİ',          p1Name: 'ZELİHA DEVECİ (Anne)',         p1Phone: '05466063963', p2Name: 'AHMET DEVECİ (Baba)',           p2Phone: '05413902228', score: 0, streak: 0 },
+    { id: 'no_614',  no: '614',  name: 'ZEYNEP SUDE GÜRKAN',     p1Name: 'MEHMET GÜRKAN (Baba)',         p1Phone: '05427358626', p2Name: 'ZÜBEYDE GÜRKAN (Anne)',         p2Phone: '05455816331', score: 0, streak: 0 },
+    { id: 'no_727',  no: '727',  name: 'TUBA GÜNEŞ',             p1Name: 'GÜLER GÜNEŞ (Anne)',           p1Phone: '05419215477', p2Name: 'AYŞEGÜL GÜNEŞ (Abla)',          p2Phone: '05437174708', score: 0, streak: 0 },
+    { id: 'no_771',  no: '771',  name: 'KÜBRA KUTLU',            p1Name: 'SEYDİ KUTLU (Baba)',           p1Phone: '05422529179', p2Name: 'AYSEL KUTLU (Anne)',            p2Phone: '05465964023', score: 0, streak: 0 },
+    { id: 'no_777',  no: '777',  name: 'ZEYNEP ASLANDAĞ',        p1Name: 'AYŞE ASLANDAĞ (Anne)',         p1Phone: '05433867660', p2Name: 'MEHMET ASLANDAĞ (Baba)',        p2Phone: '05415403268', score: 0, streak: 0 },
+    { id: 'no_805',  no: '805',  name: 'SİNAN ŞEYHUN',           p1Name: 'VASFİYE ŞEYHUN (Anne)',        p1Phone: '05438023221', p2Name: 'BEKİR ŞEYHUN (Baba)',           p2Phone: '05444157824', score: 0, streak: 0 },
+    { id: 'no_807',  no: '807',  name: 'ELİF NUR ORHAN',         p1Name: 'ARZU ORHAN (Anne)',            p1Phone: '05422959222', p2Name: 'MESUT ORHAN (Baba)',            p2Phone: '05467271482', score: 0, streak: 0 },
+    { id: 'no_921',  no: '921',  name: 'ELİFNUR CİN',            p1Name: 'MEHMET CİN (Baba)',            p1Phone: '05330158206', p2Name: 'FATMA CİN (Anne)',              p2Phone: '05468236476', score: 0, streak: 0 },
+    { id: 'no_957',  no: '957',  name: 'HİCRET PAÇAL',           p1Name: 'HACİRE PAÇAL (Anne)',          p1Phone: '05413667642', p2Name: 'MEHMET ŞERİF PAÇAL (Baba)',     p2Phone: '05462492306', score: 0, streak: 0 },
+    { id: 'no_984',  no: '984',  name: 'KADİR YILDIRIM',         p1Name: 'LOKMAN YILDIRIM (Baba)',       p1Phone: '05389729442', p2Name: 'SAKİNE YILDIRIM (Anne)',        p2Phone: '05447475050', score: 0, streak: 0 },
+    { id: 'no_1014', no: '1014', name: 'MELEK NUR ÇELİK',        p1Name: 'SAADET ÇELİK (Anne)',          p1Phone: '05426103880', p2Name: 'SİNAN ÇELİK (Baba)',            p2Phone: '05435736391', score: 0, streak: 0 },
+    { id: 'no_1115', no: '1115', name: 'MUHAMMED MURSİ ÇİDACI',  p1Name: 'TUBA ÇİDACI (Abla)',           p1Phone: '05538593763', p2Name: 'ÜVEYŞ ÇİDACI (Anne)',           p2Phone: '05459771647', score: 0, streak: 0 },
+    { id: 'no_1132', no: '1132', name: 'MUSTAFA BAŞKUT',         p1Name: 'HANİFİ BAŞKUT (Baba)',         p1Phone: '05423483655', p2Name: 'MAKBULE BAŞKUT (Anne)',         p2Phone: '05433263589', score: 0, streak: 0 },
+    { id: 'no_1144', no: '1144', name: 'ÖMER ACAR',              p1Name: 'SABAHAT ACAR (Anne)',          p1Phone: '05365534171', p2Name: 'MUHAMMET EFE ACAR (Abi)',       p2Phone: '05364778903', score: 0, streak: 0 },
+    { id: 'no_1150', no: '1150', name: 'ÖMER FARUK İSTER',       p1Name: 'İPEK İSTER (Anne)',            p1Phone: '05427698226', p2Name: 'MEHMET EMİN İSTER (Baba)',      p2Phone: '05427696998', score: 0, streak: 0 },
+    { id: 'no_1154', no: '1154', name: 'RABİA ÇELİK',            p1Name: 'İDE ÇELİK (Anne)',             p1Phone: '05431554494', p2Name: '',                              p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_1168', no: '1168', name: 'RÜMEYSA SIĞIRCI',        p1Name: 'ÖZLEM SIĞIRCI (Anne)',         p1Phone: '05444317127', p2Name: '',                              p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_9133', no: '9133', name: 'YAĞMUR ÖZBAKIRCI',       p1Name: 'ALİ ÖZBAKIRCI (Baba)',         p1Phone: '05422003865', p2Name: 'ÖZLEM ÖZBAKIRCI (Anne)',        p2Phone: '05426723865', score: 0, streak: 0 },
+    { id: 'no_9134', no: '9134', name: 'İBRAHİM ELİSA ELCELLO',  p1Name: 'İBRAHİM ELCELLO (Baba)',       p1Phone: '05418998843', p2Name: '',                              p2Phone: '',            score: 0, streak: 0 },
+    { id: 'no_9135', no: '9135', name: 'YAĞMUR ÇATAL',           p1Name: 'RUKİYE ÇATAL (Anne)',          p1Phone: '05425296394', p2Name: 'HALİL ÇATAL (Baba)',            p2Phone: '05425296373', score: 0, streak: 0 },
+    { id: 'no_9252', no: '9252', name: 'NASREDDİN ALABDULĞAFUR', p1Name: 'ZEYNEP EĞİT (Anne)',           p1Phone: '05431088883', p2Name: 'İBRAHİM ALABDULĞAFUR (Baba)',   p2Phone: '05432373617', score: 0, streak: 0 }
+  ];
+
+  let appState = {
+    className: '8-A',
+    currentTopic: 'Üslü İfadeler Kazanım Testi',
+    currentDate: new Date().toISOString().slice(0, 10),
+    updatedAt: 0,
+    students: [],
+    dailyRecords: {}
+  };
+
+  let isUnlocked = false;
+  let isPhoneRemote = false;
+  let autoLockTimer = null;
+  let mqttClient = null;
+  let clientId = 'client_' + Math.random().toString(36).substring(2, 9);
+  let activeFilter = 'all';
+  let currentDetectiveStudentId = null;
+  let currentBoardStudentId = null;
+  let pendingReward = { title: '', cost: 0 };
+
+  // Ses efektleri
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function playTone(type) {
+    try {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+
+      if (type === 'success') {
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.08);
+        osc.frequency.setValueAtTime(783.99, now + 0.16);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'warn') {
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(349.23, now + 0.12);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === 'fail') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.setValueAtTime(160, now + 0.15);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      }
+    } catch (e) {}
+  }
+
+  function initApp() {
+    // Eski V2 verisi varsa taşı, yoksa V3'ten oku
+    const savedV3 = localStorage.getItem(STORAGE_KEY);
+    const savedV2 = localStorage.getItem('LGS_8A_ODEV_TAKIP_V2_REAL');
+
+    if (savedV3) {
+      try { appState = JSON.parse(savedV3); } catch (e) {}
+    } else if (savedV2) {
+      try { appState = JSON.parse(savedV2); } catch (e) {}
+    }
+
+    if (!appState.students || appState.students.length === 0) {
+      appState.students = JSON.parse(JSON.stringify(defaultStudents8A));
+    }
+
+    if (!appState.currentDate) {
+      appState.currentDate = new Date().toISOString().slice(0, 10);
+    }
+
+    document.getElementById('hwTopicInput').value = appState.currentTopic || 'Üslü İfadeler Kazanım Testi';
+    document.getElementById('hwDateInput').value = appState.currentDate;
+
+    // URL'de ?teacher=2026 (Karekod ile telefondan giriş) var mı kontrol et
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('teacher') === TEACHER_PIN) {
+      isPhoneRemote = true;
+      setUnlockState(true, true);
+    } else {
+      setUnlockState(false, false);
+    }
+
+    ensureDateRecord(appState.currentDate);
+    renderAll();
+    initLiveSync();
+
+    // Tahtada açık unutulursa otomatik kilitleme için tıklama/dokunma dinleyicisi
+    ['click', 'touchstart', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, resetAutoLockTimer, { passive: true });
+    });
+  }
+
+  // KİLİT & GÜVENLİK YÖNETİMİ
+  function setUnlockState(unlocked, isPhone = false) {
+    isUnlocked = unlocked;
+    const pill = document.getElementById('securityStatusPill');
+    const sub = document.getElementById('deviceRoleSubtitle');
+    const topicInput = document.getElementById('hwTopicInput');
+
+    if (unlocked) {
+      document.body.classList.remove('is-locked');
+      pill.className = 'security-pill unlocked';
+      pill.textContent = isPhone ? '📱 ÖĞRETMEN TELEFON KUMANDASI AKTİF' : '🔓 ÖĞRETMEN MODU AÇIK (Tıkla Kilitle)';
+      sub.textContent = isPhone
+        ? '📱 Telefon Kumandası Modu • Yaptığınız her değişiklik anında Akıllı Tahtaya yansır'
+        : '🔓 Öğretmen Kilidi Açık • 3 dk işlem yapılmazsa tahta otomatik kilitlenir';
+      topicInput.disabled = false;
+      resetAutoLockTimer();
+    } else {
+      document.body.classList.add('is-locked');
+      pill.className = 'security-pill locked';
+      pill.textContent = '🔒 TAHTA KİLİTLİ (Öğrenci Koruması Aktif)';
+      sub.textContent = '🔒 Akıllı Tahta Kilitli İzleyici Modu • Öğrenciler puan değiştiremez';
+      topicInput.disabled = true;
+      if (autoLockTimer) clearTimeout(autoLockTimer);
+      // Eğer gizli veli sekmesindeyse ana sekmeye dön
+      const parentsPanel = document.getElementById('parentsTab');
+      if (parentsPanel.classList.contains('active')) {
+        switchTab('checkTab', document.querySelector('.tab-btn'));
+      }
+    }
+    renderAll();
+  }
+
+  function resetAutoLockTimer() {
+    if (!isUnlocked || isPhoneRemote) return; // Telefonda otomatik kilitlenmesin, sadece akıllı tahtada kilitlensin
+    if (autoLockTimer) clearTimeout(autoLockTimer);
+    autoLockTimer = setTimeout(() => {
+      setUnlockState(false);
+      showToast('🔒 3 dakika işlem yapılmadığı için Akıllı Tahta otomatik kilitlendi.');
+    }, 3 * 60 * 1000);
+  }
+
+  function handleLockButtonClick() {
+    if (isUnlocked) {
+      lockBoardNow();
+    } else {
+      openPinModal();
+    }
+  }
+
+  function lockBoardNow() {
+    setUnlockState(false);
+    broadcastAction({ type: 'LOCK_BOARD' });
+    showToast('🔒 Akıllı Tahta Kilitlendi! Öğrenciler hiçbir puanı değiştiremez.');
+  }
+
+  function openPinModal() {
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinModal').classList.add('show');
+    setTimeout(() => document.getElementById('pinInput').focus(), 100);
+  }
+
+  function verifyPin() {
+    const val = document.getElementById('pinInput').value.trim();
+    if (val === TEACHER_PIN) {
+      setUnlockState(true, false);
+      closeModal('pinModal');
+      playTone('success');
+      showToast('🔓 Öğretmen Kilidi Açıldı!');
+    } else {
+      playTone('fail');
+      alert('Hatalı Öğretmen Şifresi!');
+    }
+  }
+
+  function requireTeacherAuth() {
+    if (isUnlocked) return true;
+    playTone('fail');
+    showToast('🔒 Ekran Kilitli! Sadece Merve Hoca (Karekod veya Şifre ile) puan değiştirebilir.');
+    return false;
+  }
+
+  // CANLI SENKRONİZASYON (MQTT WebSockets ile Telefon <-> Akıllı Tahta)
+  function initLiveSync() {
+    const dot = document.getElementById('syncDot');
+    const txt = document.getElementById('syncStatusText');
+    document.getElementById('roomCodeDisplay').textContent = SYNC_ROOM_ID;
+
+    try {
+      mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
+        clientId: clientId,
+        clean: true,
+        connectTimeout: 5000,
+        reconnectPeriod: 3000
+      });
+
+      mqttClient.on('connect', () => {
+        dot.classList.add('online');
+        txt.textContent = 'Canlı Senkron: Bağlı (Tahta ↔ Telefon)';
+        mqttClient.subscribe(MQTT_TOPIC_STATE, { qos: 1 });
+        mqttClient.subscribe(MQTT_TOPIC_ACTION, { qos: 0 });
+      });
+
+      mqttClient.on('message', (topic, payload) => {
+        try {
+          const data = JSON.parse(payload.toString());
+          if (data.senderId === clientId) return; // Kendi mesajımızı yoksay
+
+          if (topic === MQTT_TOPIC_STATE && data.state) {
+            // Gelen veri daha yeniyse veya bizde henüz işlem yoksa güncelle
+            if ((data.state.updatedAt || 0) >= (appState.updatedAt || 0)) {
+              appState = data.state;
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+              document.getElementById('hwTopicInput').value = appState.currentTopic || '';
+              document.getElementById('hwDateInput').value = appState.currentDate || '';
+              renderAll();
+              playTone('success');
+              showToast('📲 Telefondan/Tahtadan canlı güncellendi!');
+            }
+          } else if (topic === MQTT_TOPIC_ACTION) {
+            handleRemoteAction(data);
+          }
+        } catch (err) {}
+      });
+
+      mqttClient.on('offline', () => {
+        dot.classList.remove('online');
+        txt.textContent = 'Çevrimdışı (Yerel Kayıt Aktif)';
+      });
+    } catch (e) {
+      txt.textContent = 'Yerel Mod';
+    }
+  }
+
+  function saveState(broadcast = true) {
+    appState.updatedAt = Date.now();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    if (broadcast && mqttClient && mqttClient.connected) {
+      const packet = JSON.stringify({
+        senderId: clientId,
+        state: appState
+      });
+      // retain: true sayesinde telefon veya tahta sonradan açılsa bile son puan durumunu anında çeker!
+      mqttClient.publish(MQTT_TOPIC_STATE, packet, { qos: 1, retain: true });
+    }
+  }
+
+  function pushSyncNow() {
+    saveState(true);
+    showToast('🔄 Tüm puanlar buluta ve bağlı cihazlara gönderildi!');
+  }
+
+  function broadcastAction(actionObj) {
+    if (mqttClient && mqttClient.connected) {
+      mqttClient.publish(MQTT_TOPIC_ACTION, JSON.stringify({
+        senderId: clientId,
+        ...actionObj
+      }), { qos: 0, retain: false });
+    }
+  }
+
+  function handleRemoteAction(data) {
+    if (data.type === 'LOCK_BOARD' && !isPhoneRemote) {
+      setUnlockState(false);
+      showToast('🔒 Telefon kumandasından tahta kilitlendi.');
+    } else if (data.type === 'SHOW_DETECTIVE') {
+      document.getElementById('detectiveModal').classList.add('show');
+      document.getElementById('detectiveStudentName').textContent = data.studentName;
+      document.getElementById('detectiveQuestionNum').textContent = data.questionText;
+      playTone('warn');
+    } else if (data.type === 'SHOW_BOARD_PICKER') {
+      document.getElementById('boardPickerModal').classList.add('show');
+      document.getElementById('boardStudentName').textContent = data.studentName;
+      document.getElementById('boardStudentStats').textContent = data.statsText;
+      playTone('success');
+    }
+  }
+
+  // KAREKOD OLUŞTURMA
+  function getBaseAppUrl() {
+    if (window.location.protocol.startsWith('http')) {
+      return window.location.origin + window.location.pathname;
+    }
+    return localStorage.getItem('CUSTOM_QR_BASE_URL') || DEFAULT_CLOUD_URL;
+  }
+
+  function openQrModal() {
+    const baseUrl = getBaseAppUrl();
+    const fullTeacherUrl = `${baseUrl}?teacher=${TEACHER_PIN}&room=${SYNC_ROOM_ID}`;
+    document.getElementById('qrTargetUrlInput').value = fullTeacherUrl;
+    renderQrCode(fullTeacherUrl);
+    document.getElementById('qrModal').classList.add('show');
+  }
+
+  function updateQrCodeUrl() {
+    const val = document.getElementById('qrTargetUrlInput').value.trim();
+    if (val) {
+      renderQrCode(val);
+    }
+  }
+
+  function renderQrCode(urlStr) {
+    const container = document.getElementById('qrcodeContainer');
+    container.innerHTML = '';
+    try {
+      new QRCode(container, {
+        text: urlStr,
+        width: 210,
+        height: 210,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch (e) {
+      container.innerHTML = '<p style="color:#000;">QR Kod oluşturulamadı</p>';
+    }
+  }
+
+  function copyTeacherLink() {
+    const val = document.getElementById('qrTargetUrlInput').value;
+    navigator.clipboard.writeText(val).then(() => {
+      showToast('📋 Öğretmen telefon linki kopyalandı! Kendinize WhatsApp\'tan atabilirsiniz.');
+    });
+  }
+
+  // VERİ VE PUAN İŞLEMLERİ
+  function ensureDateRecord(dateStr) {
+    if (!appState.dailyRecords[dateStr]) {
+      appState.dailyRecords[dateStr] = {};
+    }
+    appState.students.forEach(st => {
+      if (!appState.dailyRecords[dateStr][st.id]) {
+        appState.dailyRecords[dateStr][st.id] = { hw: null, review: false, board: false };
+      }
+    });
+  }
+
+  function saveSettings() {
+    if (!requireTeacherAuth()) return;
+    appState.currentTopic = document.getElementById('hwTopicInput').value.trim() || 'Matematik Ödevi';
+    saveState();
+    showToast('Ödev başlığı güncellendi');
+  }
+
+  function changeDate() {
+    const newDate = document.getElementById('hwDateInput').value;
+    if (newDate) {
+      appState.currentDate = newDate;
+      ensureDateRecord(newDate);
+      saveState(isUnlocked);
+      renderAll();
+      showToast('Tarih: ' + newDate);
+    }
+  }
+
+  function setFilter(f) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    const pill = document.getElementById('pill-' + f);
+    if (pill) pill.classList.add('active');
+    renderStudentList();
+  }
+
+  function getRankTitle(score) {
+    if (score >= 300) return '👑 8-A LGS Efsanesi';
+    if (score >= 200) return '💎 Yeni Nesil Fatihi';
+    if (score >= 100) return '🔥 Üslü İfade Ustası';
+    if (score >= 40)  return '⚡ Kazanım Avcısı';
+    return '🌱 Başlangıç Adayı';
+  }
+
+  function getHwScoreValue(status) {
+    if (status === 'full') return 10;
+    if (status === 'half') return 5;
+    if (status === 'none') return -5;
+    return 0;
+  }
+
+  function setHomeworkStatus(studentId, newStatus) {
+    if (!requireTeacherAuth()) return;
+
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const rec = appState.dailyRecords[dateStr][studentId];
+    const student = appState.students.find(s => s.id === studentId);
+    if (!student) return;
+
+    const oldStatus = rec.hw;
+
+    if (oldStatus) {
+      student.score -= getHwScoreValue(oldStatus);
+      if (oldStatus === 'full' && student.streak > 0) {
+        student.streak -= 1;
+      }
+    }
+
+    if (oldStatus === newStatus) {
+      rec.hw = null;
+      saveState();
+      renderAll();
+      return;
+    }
+
+    rec.hw = newStatus;
+    student.score += getHwScoreValue(newStatus);
+
+    if (newStatus === 'full') {
+      student.streak = (student.streak || 0) + 1;
+      playTone('success');
+      if (student.streak > 0 && student.streak % 3 === 0) {
+        student.score += 10;
+        showToast(`🔥 ${student.name} ${student.streak} derslik seri yaptı! +10 Bonus Puan!`);
+      }
+    } else if (newStatus === 'half') {
+      playTone('warn');
+    } else if (newStatus === 'none') {
+      student.streak = 0;
+      playTone('fail');
+    }
+
+    saveState();
+    renderAll();
+  }
+
+  function toggleExtra(studentId, field) {
+    if (!requireTeacherAuth()) return;
+
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const rec = appState.dailyRecords[dateStr][studentId];
+    const student = appState.students.find(s => s.id === studentId);
+    if (!student) return;
+
+    rec[field] = !rec[field];
+    if (rec[field]) {
+      student.score += 5;
+      playTone('success');
+    } else {
+      student.score -= 5;
+    }
+
+    saveState();
+    renderAll();
+  }
+
+  function renderAll() {
+    renderStudentList();
+    renderStats();
+    renderLeaderboard();
+    renderParentTable();
+  }
+
+  function renderStats() {
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const dayMap = appState.dailyRecords[dateStr];
+
+    let full = 0, half = 0, none = 0, rev = 0;
+    appState.students.forEach(s => {
+      const r = dayMap[s.id] || {};
+      if (r.hw === 'full') full++;
+      if (r.hw === 'half') half++;
+      if (r.hw === 'none') none++;
+      if (r.review) rev++;
+    });
+
+    document.getElementById('statTotalStudents').textContent = appState.students.length;
+    document.getElementById('statFullCount').textContent = full;
+    document.getElementById('statHalfCount').textContent = half;
+    document.getElementById('statNoneCount').textContent = none;
+    document.getElementById('statReviewCount').textContent = rev;
+  }
+
+  function renderStudentList() {
+    const container = document.getElementById('studentListContainer');
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const dayMap = appState.dailyRecords[dateStr];
+    const query = (document.getElementById('studentSearchInput').value || '').toLocaleLowerCase('tr-TR').trim();
+
+    const sortedIds = [...appState.students]
+      .sort((a, b) => b.score - a.score)
+      .map(s => s.id);
+
+    container.innerHTML = '';
+
+    appState.students.forEach((student) => {
+      const rec = dayMap[student.id] || { hw: null, review: false, board: false };
+
+      if (query) {
+        const hay = `${student.no || ''} ${student.name} ${student.p1Name || ''} ${student.p2Name || ''}`.toLocaleLowerCase('tr-TR');
+        if (!hay.includes(query)) return;
+      }
+
+      if (activeFilter === 'full' && rec.hw !== 'full') return;
+      if (activeFilter === 'half' && rec.hw !== 'half') return;
+      if (activeFilter === 'none' && rec.hw !== 'none') return;
+      if (activeFilter === 'unmarked' && rec.hw !== null) return;
+      if (activeFilter === 'review' && !rec.review) return;
+
+      const rankIndex = sortedIds.indexOf(student.id) + 1;
+
+      let rankClass = '';
+      if (rankIndex === 1) rankClass = 'rank-1';
+      else if (rankIndex === 2) rankClass = 'rank-2';
+      else if (rankIndex === 3) rankClass = 'rank-3';
+
+      let rowStatusClass = '';
+      if (rec.hw === 'full') rowStatusClass = 'status-full';
+      else if (rec.hw === 'half') rowStatusClass = 'status-half';
+      else if (rec.hw === 'none') rowStatusClass = 'status-none';
+
+      const streakHtml = student.streak > 0
+        ? `<span class="streak-badge ${student.streak >= 3 ? 'hot' : ''}">🔥 ${student.streak} Seri</span>`
+        : '';
+
+      const p2BtnHtml = (isUnlocked && student.p2Phone)
+        ? `<button class="wa-btn secondary" onclick="sendParentWhatsApp('${student.id}', 2)" title="2. Veli: ${escapeHtml(student.p2Name)}">
+             📲 2.Veli
+           </button>`
+        : '';
+
+      const teacherActionsHtml = isUnlocked
+        ? `<div class="row-actions">
+             <button class="wa-btn" onclick="sendParentWhatsApp('${student.id}', 1)" title="1. Veli: ${escapeHtml(student.p1Name)}">
+               📲 1.Veli
+             </button>
+             ${p2BtnHtml}
+             <button class="icon-btn" onclick="openEditStudentModal('${student.id}')" title="Öğrenciyi Düzenle">
+               ✏️
+             </button>
+           </div>`
+        : `<div class="row-actions">
+             <span style="font-size:11px; color:#64748b; font-weight:700;">🔒 Kilitli</span>
+           </div>`;
+
+      const row = document.createElement('div');
+      row.className = `student-row ${rowStatusClass}`;
+      row.innerHTML = `
+        <div class="rank-num ${rankClass}">${rankIndex}</div>
+        <div class="student-identity">
+          <div class="student-name-line">
+            ${student.no ? `<span class="school-no">#${escapeHtml(student.no)}</span>` : ''}
+            <span class="student-name">${escapeHtml(student.name)}</span>
+            ${streakHtml}
+          </div>
+          <div class="parent-subline">
+            <span class="rank-title-badge">${getRankTitle(student.score)}</span>
+            ${isUnlocked ? `<span>• 👨‍👩‍👧 ${escapeHtml(student.p1Name || 'Veli')}</span>` : ''}
+          </div>
+        </div>
+
+        <div class="score-box">
+          <div class="score-pill">
+            <div class="pts">${student.score}</div>
+            <div class="lbl">PUAN</div>
+          </div>
+        </div>
+
+        <div class="check-buttons">
+          <button class="chk-btn full ${rec.hw === 'full' ? 'active' : ''}" onclick="setHomeworkStatus('${student.id}', 'full')">
+            ✅ Tam (+10)
+          </button>
+          <button class="chk-btn half ${rec.hw === 'half' ? 'active' : ''}" onclick="setHomeworkStatus('${student.id}', 'half')">
+            ⚠️ Uğraştı (+5)
+          </button>
+          <button class="chk-btn none ${rec.hw === 'none' ? 'active' : ''}" onclick="setHomeworkStatus('${student.id}', 'none')">
+            ❌ Yapmadı (-5)
+          </button>
+          <button class="chk-btn review ${rec.review ? 'active' : ''}" onclick="toggleExtra('${student.id}', 'review')">
+            📘 Tekrar (+5)
+          </button>
+          <button class="chk-btn board ${rec.board ? 'active' : ''}" onclick="toggleExtra('${student.id}', 'board')">
+            🙋 Tahta (+5)
+          </button>
+        </div>
+
+        ${teacherActionsHtml}
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  function renderParentTable() {
+    const tbody = document.getElementById('parentTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    appState.students.forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>#${escapeHtml(s.no || '-')}</b></td>
+        <td><b>${escapeHtml(s.name)}</b></td>
+        <td><span style="color:#facc15; font-weight:800;">${s.score} Puan</span></td>
+        <td>${escapeHtml(s.p1Name || '-')} <br><span style="color:#38bdf8; font-weight:700;">${escapeHtml(s.p1Phone || '')}</span></td>
+        <td>${escapeHtml(s.p2Name || '-')} <br><span style="color:#38bdf8; font-weight:700;">${escapeHtml(s.p2Phone || '')}</span></td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="wa-btn" onclick="sendParentWhatsApp('${s.id}', 1)">📲 1. Veli</button>
+            ${s.p2Phone ? `<button class="wa-btn secondary" onclick="sendParentWhatsApp('${s.id}', 2)">📲 2. Veli</button>` : ''}
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderLeaderboard() {
+    const podium = document.getElementById('podiumContainer');
+    const sorted = [...appState.students].sort((a, b) => b.score - a.score);
+
+    const medals = [
+      { cls: 'gold', icon: '🥇', title: '1. ŞAMPİYON' },
+      { cls: 'silver', icon: '🥈', title: '2. LİDER ADAYI' },
+      { cls: 'bronze', icon: '🥉', title: '3. YÜKSELEN YILDIZ' }
+    ];
+
+    podium.innerHTML = '';
+    for (let i = 0; i < Math.min(3, sorted.length); i++) {
+      const s = sorted[i];
+      const m = medals[i];
+      podium.innerHTML += `
+        <div class="podium-card ${m.cls}">
+          <div class="podium-medal">${m.icon}</div>
+          <div style="font-size:12px; font-weight:800; color:#94a3b8;">${m.title}</div>
+          <div class="podium-name">${escapeHtml(s.name)}</div>
+          <div class="podium-score">${s.score} Puan</div>
+          <div style="font-size:13px; color:#a5b4fc; font-weight:700;">${getRankTitle(s.score)}</div>
+          <div style="margin-top:8px; font-size:12px; color:#fb923c; font-weight:800;">🔥 ${s.streak || 0} Derslik Seri</div>
+        </div>
+      `;
+    }
+  }
+
+  // Veliye Bireysel WhatsApp Gönderimi
+  function sendParentWhatsApp(studentId, parentIndex) {
+    if (!requireTeacherAuth()) return;
+    const student = appState.students.find(s => s.id === studentId);
+    if (!student) return;
+
+    const parentName = parentIndex === 2 ? (student.p2Name || 'Velimiz') : (student.p1Name || 'Velimiz');
+    const rawPhone = parentIndex === 2 ? (student.p2Phone || '') : (student.p1Phone || '');
+
+    const dateStr = appState.currentDate;
+    const topic = appState.currentTopic || 'Matematik Ödevi';
+    const rec = (appState.dailyRecords[dateStr] && appState.dailyRecords[dateStr][studentId]) || {};
+
+    let statusText = '';
+    if (rec.hw === 'full') {
+      statusText = `bugünkü *${topic}* ödevini eksiksiz ve işlemli olarak tamamlamıştır ✅ (+10 Puan). Kendisini tebrik ederiz!`;
+    } else if (rec.hw === 'half') {
+      statusText = `bugünkü *${topic}* ödevinde çaba göstermiş ancak bazı soruları eksik bırakmıştır ⚠️ (+5 Puan). Eksik soruların tamamlanması için desteğinizi rica ederim.`;
+    } else if (rec.hw === 'none') {
+      statusText = `bugünkü *${topic}* ödevini tamamlamamıştır ❌ (-5 Puan). LGS sürecinde konu eksiği oluşmaması için ödevin bu akşam tamamlanarak yarın kontrol ettirilmesi konusunda desteğinizi rica ederim.`;
+    } else {
+      statusText = `güncel LGS Matematik takip sistemimizde *${student.score} puana* sahiptir (${getRankTitle(student.score)}).`;
+    }
+
+    const reviewAdd = rec.review ? ` Ayrıca günlük konu tekrarını da başarıyla yapmıştır 📘.` : '';
+    const msg = `Sayın *${parentName}*, 8-A sınıfı öğrencimiz *${student.name}*, ${dateStr} tarihli kontrolümüzde ${statusText}${reviewAdd} Güncel Başarı Puanı: *${student.score}*. İyi günler dilerim.`;
+
+    let phone = rawPhone.replace(/\D/g, '');
+    if (phone.startsWith('0')) phone = '90' + phone.slice(1);
+    else if (phone.length === 10 && phone.startsWith('5')) phone = '90' + phone;
+
+    if (phone.length >= 11) {
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    } else {
+      navigator.clipboard.writeText(msg).then(() => {
+        showToast('Mesaj kopyalandı! WhatsApp\'a yapıştırabilirsiniz.');
+      });
+    }
+  }
+
+  // Veli Grubu Toplu Raporu
+  function openGroupReportModal() {
+    if (!requireTeacherAuth()) return;
+    const dateStr = appState.currentDate;
+    const topic = appState.currentTopic || 'Matematik Ödevi';
+    ensureDateRecord(dateStr);
+    const dayMap = appState.dailyRecords[dateStr];
+
+    const fullList = [];
+    const halfList = [];
+    const noneList = [];
+    const reviewList = [];
+
+    appState.students.forEach(s => {
+      const r = dayMap[s.id] || {};
+      if (r.hw === 'full') fullList.push(s.name);
+      else if (r.hw === 'half') halfList.push(s.name);
+      else if (r.hw === 'none') noneList.push(s.name);
+      if (r.review) reviewList.push(s.name);
+    });
+
+    const top5 = [...appState.students].sort((a, b) => b.score - a.score).slice(0, 5);
+
+    const lines = [
+      `📊 *8-A SINIFI LGS MATEMATİK GÜNLÜK TAKİP RAPORU*`,
+      `📅 *Tarih:* ${dateStr}`,
+      `📚 *Ödev / Konu:* ${topic}`,
+      `────────────────────`,
+      `✅ *Ödevini Eksiksiz Yapanlar (+10p):* (${fullList.length} Öğrenci)`,
+      fullList.length ? fullList.map(n => `• ${n}`).join('\n') : '• (Henüz giriş yapılmadı)',
+      ``,
+      `⚠️ *Uğraşan / Eksik Bırakanlar (+5p):* (${halfList.length} Öğrenci)`,
+      halfList.length ? halfList.map(n => `• ${n}`).join('\n') : '• Yok',
+      ``,
+      `❌ *Ödevini Yapmayanlar (-5p):* (${noneList.length} Öğrenci)`,
+      noneList.length ? noneList.map(n => `• ${n}`).join('\n') : '• Yok (Teşekkürler! 👏)',
+      ``,
+      `📘 *Günlük Tekrar / Kural Kartı Tam Olanlar (+5p):*`,
+      reviewList.length ? reviewList.map(n => `• ${n}`).join(', ') : '• Yok',
+      `────────────────────`,
+      `🏆 *8-A Puan Liderlik Tablosu (İlk 5):*`,
+      top5.map((s, idx) => `${idx + 1}. ${s.name} (${s.score} Puan)`).join('\n'),
+      ``,
+      `📌 _Not: Ödevini yapmayan veya eksik bırakan öğrencilerimizin konu eksiği yaşamaması için bu akşam eksiklerini tamamlamaları gerekmektedir. Desteğiniz için teşekkür ederim._`
+    ];
+
+    document.getElementById('groupReportText').value = lines.join('\n');
+    document.getElementById('groupReportModal').classList.add('show');
+  }
+
+  function copyGroupReport() {
+    const txt = document.getElementById('groupReportText').value;
+    navigator.clipboard.writeText(txt).then(() => {
+      showToast('📋 Rapor kopyalandı! 8-A Veli WhatsApp Grubuna yapıştırabilirsiniz.');
+    });
+  }
+
+  // Dedektif Kontrolü (Telefondan basınca Tahtada da açılır!)
+  function openDetectiveModal() {
+    if (!requireTeacherAuth()) return;
+    document.getElementById('detectiveModal').classList.add('show');
+    spinDetective(true);
+  }
+
+  function spinDetective(broadcast = false) {
+    if (!requireTeacherAuth()) return;
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const dayMap = appState.dailyRecords[dateStr];
+
+    let pool = appState.students.filter(s => dayMap[s.id] && (dayMap[s.id].hw === 'full' || dayMap[s.id].hw === 'half'));
+    if (pool.length === 0) pool = appState.students;
+    if (pool.length === 0) return;
+
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+    const qNum = Math.floor(Math.random() * 15) + 1;
+    currentDetectiveStudentId = picked.id;
+
+    const sName = `🎯 #${picked.no || ''} ${picked.name}`;
+    const qText = `Testteki ${qNum}. Soruyu Nasıl Çözdüğünü Açıkla!`;
+
+    document.getElementById('detectiveStudentName').textContent = sName;
+    document.getElementById('detectiveQuestionNum').textContent = qText;
+    playTone('warn');
+
+    if (broadcast) {
+      broadcastAction({ type: 'SHOW_DETECTIVE', studentName: sName, questionText: qText });
+    }
+  }
+
+  function rewardDetectiveStudent(pts) {
+    if (!requireTeacherAuth() || !currentDetectiveStudentId) return;
+    const st = appState.students.find(s => s.id === currentDetectiveStudentId);
+    if (!st) return;
+    st.score += pts;
+    playTone('success');
+    saveState();
+    renderAll();
+    showToast(`👏 ${st.name} soruyu açıkladı ve +${pts} Bonus Puan kazandı!`);
+    closeModal('detectiveModal');
+  }
+
+  function punishDetectiveStudent() {
+    if (!requireTeacherAuth() || !currentDetectiveStudentId) return;
+    setHomeworkStatus(currentDetectiveStudentId, 'none');
+    showToast('🚨 İşlemsiz/Kopya ödev tespit edildi, Yapmadı (-5p) olarak işaretlendi!');
+    closeModal('detectiveModal');
+  }
+
+  // Tahtaya Öğrenci Kaldırma
+  function openBoardPickerModal() {
+    if (!requireTeacherAuth()) return;
+    document.getElementById('boardPickerModal').classList.add('show');
+    spinBoardStudent(true);
+  }
+
+  function spinBoardStudent(broadcast = false) {
+    if (!requireTeacherAuth() || appState.students.length === 0) return;
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const dayMap = appState.dailyRecords[dateStr];
+
+    let pool = appState.students.filter(s => !dayMap[s.id] || !dayMap[s.id].board);
+    if (pool.length === 0) pool = appState.students;
+
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+    currentBoardStudentId = picked.id;
+
+    const sName = `🙋 #${picked.no || ''} ${picked.name}`;
+    const sStats = `Güncel Puanı: ${picked.score} | ${getRankTitle(picked.score)}`;
+
+    document.getElementById('boardStudentName').textContent = sName;
+    document.getElementById('boardStudentStats').textContent = sStats;
+    playTone('success');
+
+    if (broadcast) {
+      broadcastAction({ type: 'SHOW_BOARD_PICKER', studentName: sName, statsText: sStats });
+    }
+  }
+
+  function giveBoardBonus() {
+    if (!requireTeacherAuth() || !currentBoardStudentId) return;
+    const dateStr = appState.currentDate;
+    ensureDateRecord(dateStr);
+    const rec = appState.dailyRecords[dateStr][currentBoardStudentId];
+    const st = appState.students.find(s => s.id === currentBoardStudentId);
+    if (!st) return;
+
+    rec.board = true;
+    st.score += 5;
+    playTone('success');
+    saveState();
+    renderAll();
+    showToast(`🌟 ${st.name} tahtada soruyu çözdü ve +5 Puan kazandı!`);
+    closeModal('boardPickerModal');
+  }
+
+  // Öğrenci Ekleme / Düzenleme
+  function openAddStudentModal() {
+    if (!requireTeacherAuth()) return;
+    document.getElementById('addStudentModal').classList.add('show');
+  }
+
+  function addSingleStudent() {
+    if (!requireTeacherAuth()) return;
+    const no = document.getElementById('newStudentNo').value.trim();
+    const name = document.getElementById('newStudentName').value.trim();
+    const p1Name = document.getElementById('newParent1Name').value.trim();
+    const p1Phone = document.getElementById('newParent1Phone').value.trim();
+    const p2Name = document.getElementById('newParent2Name').value.trim();
+    const p2Phone = document.getElementById('newParent2Phone').value.trim();
+
+    if (!name) return;
+
+    appState.students.push({
+      id: 'st_' + Date.now(),
+      no,
+      name,
+      p1Name,
+      p1Phone,
+      p2Name,
+      p2Phone,
+      score: 0,
+      streak: 0
+    });
+
+    ensureDateRecord(appState.currentDate);
+    saveState();
+    renderAll();
+    closeModal('addStudentModal');
+    showToast(`${name} sınıfa eklendi!`);
+  }
+
+  function openEditStudentModal(studentId) {
+    if (!requireTeacherAuth()) return;
+    const st = appState.students.find(s => s.id === studentId);
+    if (!st) return;
+    document.getElementById('editStudentId').value = st.id;
+    document.getElementById('editStudentNo').value = st.no || '';
+    document.getElementById('editStudentName').value = st.name;
+    document.getElementById('editParent1Name').value = st.p1Name || '';
+    document.getElementById('editParent1Phone').value = st.p1Phone || '';
+    document.getElementById('editParent2Name').value = st.p2Name || '';
+    document.getElementById('editParent2Phone').value = st.p2Phone || '';
+    document.getElementById('editStudentScore').value = st.score;
+    document.getElementById('editStudentStreak').value = st.streak || 0;
+    document.getElementById('editStudentModal').classList.add('show');
+  }
+
+  function saveStudentEdit() {
+    if (!requireTeacherAuth()) return;
+    const id = document.getElementById('editStudentId').value;
+    const st = appState.students.find(s => s.id === id);
+    if (!st) return;
+
+    st.no = document.getElementById('editStudentNo').value.trim();
+    st.name = document.getElementById('editStudentName').value.trim() || st.name;
+    st.p1Name = document.getElementById('editParent1Name').value.trim();
+    st.p1Phone = document.getElementById('editParent1Phone').value.trim();
+    st.p2Name = document.getElementById('editParent2Name').value.trim();
+    st.p2Phone = document.getElementById('editParent2Phone').value.trim();
+    st.score = parseInt(document.getElementById('editStudentScore').value, 10) || 0;
+    st.streak = parseInt(document.getElementById('editStudentStreak').value, 10) || 0;
+
+    saveState();
+    renderAll();
+    closeModal('editStudentModal');
+    showToast('Öğrenci bilgileri güncellendi.');
+  }
+
+  function deleteStudent() {
+    if (!requireTeacherAuth()) return;
+    const id = document.getElementById('editStudentId').value;
+    if (!confirm('Bu öğrenciyi listeden silmek istediğinize emin misiniz?')) return;
+    appState.students = appState.students.filter(s => s.id !== id);
+    saveState();
+    renderAll();
+    closeModal('editStudentModal');
+    showToast('Öğrenci silindi.');
+  }
+
+  // Ödül Kullandırma & Şans Çarkı
+  function populateRedeemSelect() {
+    const sel = document.getElementById('redeemStudentSelect');
+    sel.innerHTML = '';
+    appState.students.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = `#${s.no || ''} ${s.name} (${s.score} Puan)`;
+      sel.appendChild(opt);
+    });
+  }
+
+  function openRedeemModal(title, cost) {
+    if (!requireTeacherAuth()) return;
+    pendingReward = { title, cost };
+    populateRedeemSelect();
+    document.getElementById('redeemModalTitle').textContent = `🎁 ${title} (${cost} Puan)`;
+    document.getElementById('wheelSection').style.display = 'none';
+    document.getElementById('standardRedeemSection').style.display = 'flex';
+    document.getElementById('redeemModal').classList.add('show');
+  }
+
+  function confirmRedeem() {
+    if (!requireTeacherAuth()) return;
+    const studentId = document.getElementById('redeemStudentSelect').value;
+    const st = appState.students.find(s => s.id === studentId);
+    if (!st) return;
+
+    if (st.score < pendingReward.cost) {
+      playTone('fail');
+      alert(`${st.name} adlı öğrencinin puanı (${st.score}) bu ödül için (${pendingReward.cost}) yeterli değil!`);
+      return;
+    }
+
+    st.score -= pendingReward.cost;
+    playTone('success');
+    saveState();
+    renderAll();
+    closeModal('redeemModal');
+    showToast(`🎉 ${st.name} "${pendingReward.title}" ödülünü kullandı!`);
+  }
+
+  function openWheelModal() {
+    if (!requireTeacherAuth()) return;
+    populateRedeemSelect();
+    document.getElementById('redeemModalTitle').textContent = '🎡 8-A Şans Çarkı (120 Puan)';
+    document.getElementById('wheelSection').style.display = 'block';
+    document.getElementById('standardRedeemSection').style.display = 'none';
+    document.getElementById('wheelResultText').textContent = '🎡 Çevirmeye Hazır!';
+    document.getElementById('redeemModal').classList.add('show');
+  }
+
+  function spinRewardWheel() {
+    if (!requireTeacherAuth()) return;
+    const studentId = document.getElementById('redeemStudentSelect').value;
+    const st = appState.students.find(s => s.id === studentId);
+    if (!st) return;
+
+    if (st.score < 120) {
+      playTone('fail');
+      alert(`${st.name} adlı öğrencinin çarkı çevirmek için en az 120 puanı olmalı! (Mevcut: ${st.score})`);
+      return;
+    }
+
+    st.score -= 120;
+    const prizes = [
+      { text: '🎟️ 1 Soru Pas Jokeri Kazandı!', bonus: 0 },
+      { text: '🪑 1 Ders Kankayla Oturma Hakkı!', bonus: 0 },
+      { text: '⭐ SÜRPRİZ: +150 Puan İkramiye!', bonus: 150 },
+      { text: '🍫 Hocadan Küçük Çikolata/Kantin Ödülü!', bonus: 0 },
+      { text: '💡 Kuizde 1 Soru İpucu Hakkı!', bonus: 0 },
+      { text: '🛡️ Yarım Ödev Muafiyeti Jokeri!', bonus: 0 }
+    ];
+
+    const picked = prizes[Math.floor(Math.random() * prizes.length)];
+    if (picked.bonus) st.score += picked.bonus;
+
+    document.getElementById('wheelResultText').textContent = picked.text;
+    playTone('success');
+    saveState();
+    renderAll();
+    populateRedeemSelect();
+    document.getElementById('redeemStudentSelect').value = studentId;
+  }
+
+  // Yardımcılar
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('show');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  function resetTodayStatuses() {
+    if (!requireTeacherAuth()) return;
+    if (!confirm('Bugünün işaretlemelerini sıfırlamak istediğinize emin misiniz?')) return;
+    const dateStr = appState.currentDate;
+    delete appState.dailyRecords[dateStr];
+    ensureDateRecord(dateStr);
+    saveState();
+    renderAll();
+    showToast('Bugünün işaretlemeleri sıfırlandı.');
+  }
+
+  function exportData() {
+    if (!requireTeacherAuth()) return;
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+    const a = document.createElement('a');
+    a.setAttribute("href", dataStr);
+    a.setAttribute("download", `8A_LGS_Takip_Yedek_${appState.currentDate}.json`);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  function importData(event) {
+    if (!requireTeacherAuth()) return;
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        if (parsed && Array.isArray(parsed.students)) {
+          appState = parsed;
+          saveState();
+          initApp();
+          showToast('Yedek başarıyla yüklendi!');
+        }
+      } catch (err) {
+        alert('Geçersiz yedek dosyası!');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
