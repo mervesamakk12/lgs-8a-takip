@@ -1,0 +1,983 @@
+{
+  "className": "8-A",
+  "currentTopic": "Üslü İfadeler İlk 50 soru",
+  "currentDate": "2026-10-26",
+  "updatedAt": 1793123081781,
+  "students": [
+    {
+      "id": "no_94",
+      "no": "94",
+      "name": "SALİM GÜNGÖRDİ",
+      "p1Name": "YASİN GÜNGÖRDİ (Baba)",
+      "p1Phone": "05425722000",
+      "p2Name": "",
+      "p2Phone": "",
+      "score": 10,
+      "streak": 1
+    },
+    {
+      "id": "no_107",
+      "no": "107",
+      "name": "NEHİR YABATU",
+      "p1Name": "İBRAHİM YABATU (Baba)",
+      "p1Phone": "05469044408",
+      "p2Name": "SELMA YABATU (Anne)",
+      "p2Phone": "05439044434",
+      "score": 25,
+      "streak": 2
+    },
+    {
+      "id": "no_126",
+      "no": "126",
+      "name": "AHMET ÇELİKLİ",
+      "p1Name": "BİŞAR ÇELİKLİ (Baba)",
+      "p1Phone": "05435278344",
+      "p2Name": "",
+      "p2Phone": "",
+      "score": 0,
+      "streak": 0
+    },
+    {
+      "id": "no_158",
+      "no": "158",
+      "name": "AHMET POLAT",
+      "p1Name": "DENİZ POLAT (Baba)",
+      "p1Phone": "05439443357",
+      "p2Name": "DİLŞAH POLAT (Anne)",
+      "p2Phone": "05413122896",
+      "score": 50,
+      "streak": 3
+    },
+    {
+      "id": "no_160",
+      "no": "160",
+      "name": "NİSANUR İKİER",
+      "p1Name": "HALİT İKİER (Baba)",
+      "p1Phone": "05428185583",
+      "p2Name": "MERYEM İKİER (Anne)",
+      "p2Phone": "05428186583",
+      "score": 15,
+      "streak": 1
+    },
+    {
+      "id": "no_193",
+      "no": "193",
+      "name": "EVA HAYDAR",
+      "p1Name": "ŞİRİN HAYDAR (Anne)",
+      "p1Phone": "05365894360",
+      "p2Name": "MUHAMMED HAYDAR (Baba)",
+      "p2Phone": "05382282219",
+      "score": 20,
+      "streak": 1
+    },
+    {
+      "id": "no_262",
+      "no": "262",
+      "name": "ABDULĞANİ ALKAN",
+      "p1Name": "SALAHADDİN ALKAN (Baba)",
+      "p1Phone": "05422470808",
+      "p2Name": "",
+      "p2Phone": "",
+      "score": 0,
+      "streak": 0
+    },
+    {
+      "id": "no_396",
+      "no": "396",
+      "name": "DİJLE NEVAL LUZUM",
+      "p1Name": "AYSEL LUZUM (Anne)",
+      "p1Phone": "05428408663",
+      "p2Name": "EYÜP LUZUM (Baba)",
+      "p2Phone": "05415873328",
+      "score": 45,
+      "streak": 3
+    },
+    {
+      "id": "no_421",
+      "no": "421",
+      "name": "ECRİN TURAN",
+      "p1Name": "AYŞE TURAN (Anne)",
+      "p1Phone": "05435102852",
+      "p2Name": "MEHMET KOYUNCU",
+      "p2Phone": "",
+      "score": 15,
+      "streak": 1
+    },
+    {
+      "id": "no_424",
+      "no": "424",
+      "name": "EDA YAĞMUR ELİŞ",
+      "p1Name": "MEHMET ELİŞ (Baba)",
+      "p1Phone": "05422739736",
+      "p2Name": "BESRA ELİŞ (Anne)",
+      "p2Phone": "05416427271",
+      "score": -10,
+      "streak": 0
+    },
+    {
+      "id": "no_505",
+      "no": "505",
+      "name": "ENES KALUL",
+      "p1Name": "EYLEM KALUL (Abla)",
+      "p1Phone": "05424432729",
+      "p2Name": "TELLİ KALUL (Anne)",
+      "p2Phone": "05455702065",
+      "score": 15,
+      "streak": 1
+    },
+    {
+      "id": "no_602",
+      "no": "602",
+      "name": "İLKNUR DEVECİ",
+      "p1Name": "ZELİHA DEVECİ (Anne)",
+      "p1Phone": "05466063963",
+      "p2Name": "AHMET DEVECİ (Baba)",
+      "p2Phone": "05413902228",
+      "score": 30,
+      "streak": 2
+    },
+    {
+      "id": "no_614",
+      "no": "614",
+      "name": "ZEYNEP SUDE GÜRKAN",
+      "p1Name": "MEHMET GÜRKAN (Baba)",
+      "p1Phone": "05427358626",
+      "p2Name": "ZÜBEYDE GÜRKAN (Anne)",
+      "p2Phone": "05455816331",
+      "score": 25,
+      "streak": 2
+    },
+    {
+      "id": "no_727",
+      "no": "727",
+      "name": "TUBA GÜNEŞ",
+      "p1Name": "GÜLER GÜNEŞ (Anne)",
+      "p1Phone": "05419215477",
+      "p2Name": "AYŞEGÜL GÜNEŞ (Abla)",
+      "p2Phone": "05437174708",
+      "score": 15,
+      "streak": 1
+    },
+    {
+      "id": "no_771",
+      "no": "771",
+      "name": "KÜBRA KUTLU",
+      "p1Name": "SEYDİ KUTLU (Baba)",
+      "p1Phone": "05422529179",
+      "p2Name": "AYSEL KUTLU (Anne)",
+      "p2Phone": "05465964023",
+      "score": 15,
+      "streak": 1
+    },
+    {
+      "id": "no_777",
+      "no": "777",
+      "name": "ZEYNEP ASLANDAĞ",
+      "p1Name": "AYŞE ASLANDAĞ (Anne)",
+      "p1Phone": "05433867660",
+      "p2Name": "MEHMET ASLANDAĞ (Baba)",
+      "p2Phone": "05415403268",
+      "score": 35,
+      "streak": 2
+    },
+    {
+      "id": "no_805",
+      "no": "805",
+      "name": "SİNAN ŞEYHUN",
+      "p1Name": "VASFİYE ŞEYHUN (Anne)",
+      "p1Phone": "05438023221",
+      "p2Name": "BEKİR ŞEYHUN (Baba)",
+      "p2Phone": "05444157824",
+      "score": 25,
+      "streak": 2
+    },
+    {
+      "id": "no_807",
+      "no": "807",
+      "name": "ELİF NUR ORHAN",
+      "p1Name": "ARZU ORHAN (Anne)",
+      "p1Phone": "05422959222",
+      "p2Name": "MESUT ORHAN (Baba)",
+      "p2Phone": "05467271482",
+      "score": 15,
+      "streak": 0
+    },
+    {
+      "id": "no_921",
+      "no": "921",
+      "name": "ELİFNUR CİN",
+      "p1Name": "MEHMET CİN (Baba)",
+      "p1Phone": "05330158206",
+      "p2Name": "FATMA CİN (Anne)",
+      "p2Phone": "05468236476",
+      "score": 10,
+      "streak": 1
+    },
+    {
+      "id": "no_957",
+      "no": "957",
+      "name": "HİCRET PAÇAL",
+      "p1Name": "HACİRE PAÇAL (Anne)",
+      "p1Phone": "05413667642",
+      "p2Name": "MEHMET ŞERİF PAÇAL (Baba)",
+      "p2Phone": "05462492306",
+      "score": 20,
+      "streak": 2
+    },
+    {
+      "id": "no_984",
+      "no": "984",
+      "name": "KADİR YILDIRIM",
+      "p1Name": "LOKMAN YILDIRIM (Baba)",
+      "p1Phone": "05389729442",
+      "p2Name": "SAKİNE YILDIRIM (Anne)",
+      "p2Phone": "05447475050",
+      "score": 25,
+      "streak": 1
+    },
+    {
+      "id": "no_1014",
+      "no": "1014",
+      "name": "MELEK NUR ÇELİK",
+      "p1Name": "SAADET ÇELİK (Anne)",
+      "p1Phone": "05426103880",
+      "p2Name": "SİNAN ÇELİK (Baba)",
+      "p2Phone": "05435736391",
+      "score": 15,
+      "streak": 1
+    },
+    {
+      "id": "no_1115",
+      "no": "1115",
+      "name": "MUHAMMED MURSİ ÇİDACI",
+      "p1Name": "TUBA ÇİDACI (Abla)",
+      "p1Phone": "05538593763",
+      "p2Name": "ÜVEYŞ ÇİDACI (Anne)",
+      "p2Phone": "05459771647",
+      "score": 10,
+      "streak": 1
+    },
+    {
+      "id": "no_1132",
+      "no": "1132",
+      "name": "MUSTAFA BAŞKUT",
+      "p1Name": "HANİFİ BAŞKUT (Baba)",
+      "p1Phone": "05423483655",
+      "p2Name": "MAKBULE BAŞKUT (Anne)",
+      "p2Phone": "05433263589",
+      "score": 30,
+      "streak": 2
+    },
+    {
+      "id": "no_1144",
+      "no": "1144",
+      "name": "ÖMER ACAR",
+      "p1Name": "SABAHAT ACAR (Anne)",
+      "p1Phone": "05365534171",
+      "p2Name": "MUHAMMET EFE ACAR (Abi)",
+      "p2Phone": "05364778903",
+      "score": 20,
+      "streak": 2
+    },
+    {
+      "id": "no_1150",
+      "no": "1150",
+      "name": "ÖMER FARUK İSTER",
+      "p1Name": "İPEK İSTER (Anne)",
+      "p1Phone": "05427698226",
+      "p2Name": "MEHMET EMİN İSTER (Baba)",
+      "p2Phone": "05427696998",
+      "score": 30,
+      "streak": 2
+    },
+    {
+      "id": "no_1154",
+      "no": "1154",
+      "name": "RABİA ÇELİK",
+      "p1Name": "İDE ÇELİK (Anne)",
+      "p1Phone": "05431554494",
+      "p2Name": "",
+      "p2Phone": "",
+      "score": 0,
+      "streak": 0
+    },
+    {
+      "id": "no_1168",
+      "no": "1168",
+      "name": "RÜMEYSA SIĞIRCI",
+      "p1Name": "ÖZLEM SIĞIRCI (Anne)",
+      "p1Phone": "05444317127",
+      "p2Name": "",
+      "p2Phone": "",
+      "score": 30,
+      "streak": 2
+    },
+    {
+      "id": "no_9133",
+      "no": "9133",
+      "name": "YAĞMUR ÖZBAKIRCI",
+      "p1Name": "ALİ ÖZBAKIRCI (Baba)",
+      "p1Phone": "05422003865",
+      "p2Name": "ÖZLEM ÖZBAKIRCI (Anne)",
+      "p2Phone": "05426723865",
+      "score": 0,
+      "streak": 0
+    },
+    {
+      "id": "no_9134",
+      "no": "9134",
+      "name": "İBRAHİM ELİSA ELCELLO",
+      "p1Name": "İBRAHİM ELCELLO (Baba)",
+      "p1Phone": "05418998843",
+      "p2Name": "",
+      "p2Phone": "",
+      "score": 0,
+      "streak": 0
+    }
+  ],
+  "dailyRecords": {
+    "2026-10-21": {
+      "no_94": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_107": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_126": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_158": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_160": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_193": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_262": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_396": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_421": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_424": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_505": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_602": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_614": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_727": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_771": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_777": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_805": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_807": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_921": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_957": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_984": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1014": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1115": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1132": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1144": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1150": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1154": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1168": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9133": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9134": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9135": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9252": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      }
+    },
+    "2026-10-22": {
+      "no_94": {
+        "hw": "none",
+        "review": false,
+        "board": true
+      },
+      "no_107": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_126": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_158": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_160": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_193": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_262": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_396": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_421": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_424": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_505": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_602": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_614": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_727": {
+        "hw": "half",
+        "review": false,
+        "board": true
+      },
+      "no_771": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_777": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_805": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_807": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_921": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_957": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_984": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_1014": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_1115": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_1132": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_1144": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_1150": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_1154": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_1168": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_9133": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9134": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9135": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9252": {
+        "hw": null,
+        "review": false,
+        "board": false
+      }
+    },
+    "2026-10-23": {
+      "no_94": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_107": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_126": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_158": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_160": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_193": {
+        "hw": null,
+        "review": false,
+        "board": true
+      },
+      "no_262": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_396": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_421": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_424": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_505": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_602": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_614": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_727": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_771": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_777": {
+        "hw": "half",
+        "review": false,
+        "board": true
+      },
+      "no_805": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_807": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_921": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_957": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_984": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_1014": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_1115": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_1132": {
+        "hw": "half",
+        "review": false,
+        "board": false
+      },
+      "no_1144": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_1150": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_1154": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1168": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_9133": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9134": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9135": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9252": {
+        "hw": null,
+        "review": false,
+        "board": false
+      }
+    },
+    "2026-10-26": {
+      "no_94": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_107": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_126": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_158": {
+        "hw": "full",
+        "review": true,
+        "board": false
+      },
+      "no_160": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_193": {
+        "hw": null,
+        "review": false,
+        "board": true
+      },
+      "no_262": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_396": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_421": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_424": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_505": {
+        "hw": "half",
+        "review": false,
+        "board": true
+      },
+      "no_602": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_614": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_727": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_771": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_777": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_805": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_807": {
+        "hw": "none",
+        "review": false,
+        "board": false
+      },
+      "no_921": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_957": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_984": {
+        "hw": null,
+        "review": false,
+        "board": true
+      },
+      "no_1014": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_1115": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_1132": {
+        "hw": "full",
+        "review": false,
+        "board": true
+      },
+      "no_1144": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_1150": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_1154": {
+        "hw": null,
+        "review": false,
+        "board": true
+      },
+      "no_1168": {
+        "hw": "full",
+        "review": false,
+        "board": false
+      },
+      "no_9133": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9134": {
+        "hw": null,
+        "review": false,
+        "board": false
+      },
+      "no_9135": {
+        "hw": null,
+        "review": false,
+        "board": false
+      }
+    }
+  }
+}
