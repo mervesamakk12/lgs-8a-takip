@@ -1059,7 +1059,7 @@
   <!-- Üst Başlık -->
   <header>
     <div class="brand">
-      <div class="class-badge">8-A</div>
+      <div class="class-badge" onclick="secretBadgeTap()" style="cursor:pointer;" title="Öğretmen İpucu: Şifre yazmadan kilidi açmak/kapatmak için 3 kez hızlıca dokunun">8-A</div>
       <div class="brand-text">
         <h1>LGS Matematik Ödev, Tekrar & Akıllı Tahta Sistemi</h1>
         <p id="deviceRoleSubtitle">🔒 Akıllı Tahta İzleyici Ekranı • Canlı Telefon Senkronizasyonlu</p>
@@ -1092,6 +1092,9 @@
     <div class="teacher-savers">
       <button class="action-btn btn-qr" onclick="openQrModal()">
         📱 Karekod (Telefon Kumandası)
+      </button>
+      <button class="action-btn btn-unlock teacher-only" onclick="unlockBoardRemotely()" title="Şifre girmeden Akıllı Tahta kilidini uzaktan aç">
+        🔓 Tahtayı Uzaktan Aç
       </button>
       <button class="action-btn btn-lock teacher-only" onclick="lockBoardNow()" title="Akıllı tahtayı hemen kilitle">
         🔒 Tahtayı Kilitle
@@ -1976,10 +1979,39 @@
     }
   }
 
+  let secretTapCount = 0;
+  let secretTapTimer = null;
+  function secretBadgeTap() {
+    secretTapCount++;
+    if (secretTapTimer) clearTimeout(secretTapTimer);
+    if (secretTapCount >= 3) {
+      secretTapCount = 0;
+      if (isUnlocked && !isPhoneRemote) {
+        setUnlockState(false, false);
+        showToast('🔒 Tahta Kilitlendi.');
+      } else {
+        setUnlockState(true, false);
+        playTone('success');
+        showToast('🔓 Gizli Dokunuşla Öğretmen Kilidi Açıldı!');
+      }
+      return;
+    }
+    secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 900);
+  }
+
+  function unlockBoardRemotely() {
+    broadcastAction({ type: 'UNLOCK_BOARD' });
+    showToast('🔓 Akıllı Tahta kilidini açma sinyali gönderildi!');
+  }
+
   function handleRemoteAction(data) {
     if (data.type === 'LOCK_BOARD' && !isPhoneRemote) {
       setUnlockState(false);
       showToast('🔒 Telefon kumandasından tahta kilitlendi.');
+    } else if (data.type === 'UNLOCK_BOARD' && !isPhoneRemote) {
+      setUnlockState(true, false);
+      playTone('success');
+      showToast('🔓 Telefon kumandasından tahta kilidi açıldı!');
     } else if (data.type === 'SHOW_DETECTIVE') {
       document.getElementById('detectiveModal').classList.add('show');
       document.getElementById('detectiveStudentName').textContent = data.studentName;
