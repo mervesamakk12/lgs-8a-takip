@@ -2,7 +2,7 @@
   "className": "8-A",
   "currentTopic": "Üslü İfadeler İlk 50 soru",
   "currentDate": "2026-10-26",
-  "updatedAt": 1793123081781,
+  "updatedAt": 1793123082781,
   "students": [
     {
       "id": "no_94",
@@ -13,7 +13,19 @@
       "p2Name": "",
       "p2Phone": "",
       "score": 10,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 11,
+        "matD": 5,
+        "matY": 7,
+        "matNet": 2.67,
+        "fenD": 8,
+        "fenY": 12,
+        "totalNet": 27.67,
+        "lgsScore": 283.09,
+        "note": "🔥 5 DOĞRU! Ancak 7 yanlış salladığı için neti yarıya düşmüş."
+      }
     },
     {
       "id": "no_107",
@@ -24,7 +36,19 @@
       "p2Name": "SELMA YABATU (Anne)",
       "p2Phone": "05439044434",
       "score": 25,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 4,
+        "matD": 1,
+        "matY": 5,
+        "matNet": -0.67,
+        "fenD": 9,
+        "fenY": 7,
+        "totalNet": 34.99,
+        "lgsScore": 299.77,
+        "note": "⚠️ Türkçe 14D, Din 10D çok iyi; Matematikte bilmediğini boş bırakmalı."
+      }
     },
     {
       "id": "no_126",
@@ -35,7 +59,19 @@
       "p2Name": "",
       "p2Phone": "",
       "score": 0,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 99,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 0,
+        "fenY": 0,
+        "totalNet": 0.0,
+        "lgsScore": 0.0,
+        "note": "Denemeye Girmedi"
+      }
     },
     {
       "id": "no_158",
@@ -46,7 +82,19 @@
       "p2Name": "DİLŞAH POLAT (Anne)",
       "p2Phone": "05413122896",
       "score": 50,
-      "streak": 3
+      "streak": 3,
+      "extraSources": [],
+      "exam1": {
+        "rank": 24,
+        "matD": 2,
+        "matY": 10,
+        "matNet": -1.33,
+        "fenD": 8,
+        "fenY": 8,
+        "totalNet": 4.67,
+        "lgsScore": 215.88,
+        "note": "🚨 Ödev lideri (50p) ama denemede 10 yanlış sallamış! Sadece bildiği 5 soruyu çözmeli."
+      }
     },
     {
       "id": "no_160",
@@ -57,7 +105,19 @@
       "p2Name": "MERYEM İKİER (Anne)",
       "p2Phone": "05428186583",
       "score": 15,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 1,
+        "matD": 8,
+        "matY": 5,
+        "matNet": 6.33,
+        "fenD": 14,
+        "fenY": 6,
+        "totalNet": 42.67,
+        "lgsScore": 341.65,
+        "note": "🌟 Sınıf 1.'si & Mat Lideri! 5 yanlışı azaltırsa 8+ nete çıkar."
+      }
     },
     {
       "id": "no_193",
@@ -68,7 +128,19 @@
       "p2Name": "MUHAMMED HAYDAR (Baba)",
       "p2Phone": "05382282219",
       "score": 20,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 23,
+        "matD": 6,
+        "matY": 10,
+        "matNet": 2.67,
+        "fenD": 4,
+        "fenY": 12,
+        "totalNet": 9.0,
+        "lgsScore": 223.26,
+        "note": "🚨 6 DOĞRU ile en çok doğru yapan 2. öğrenci! Ama 10 yanlış sallayarak kendine yazık etmiş!"
+      }
     },
     {
       "id": "no_262",
@@ -79,7 +151,19 @@
       "p2Name": "",
       "p2Phone": "",
       "score": 0,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 99,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 0,
+        "fenY": 0,
+        "totalNet": 0.0,
+        "lgsScore": 0.0,
+        "note": "Denemeye Girmedi"
+      }
     },
     {
       "id": "no_396",
@@ -90,7 +174,19 @@
       "p2Name": "EYÜP LUZUM (Baba)",
       "p2Phone": "05415873328",
       "score": 45,
-      "streak": 3
+      "streak": 3,
+      "extraSources": [],
+      "exam1": {
+        "rank": 6,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 10,
+        "fenY": 7,
+        "totalNet": 31.01,
+        "lgsScore": 290.46,
+        "note": "⏱️ SÜRE TUZAĞI: Fen 10D yaptı, Matematik kitapçığına hiç dokunmadı (Tamamen Boş)!"
+      }
     },
     {
       "id": "no_421",
@@ -101,7 +197,19 @@
       "p2Name": "MEHMET KOYUNCU",
       "p2Phone": "",
       "score": 15,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 9,
+        "matD": 3,
+        "matY": 5,
+        "matNet": 1.33,
+        "fenD": 11,
+        "fenY": 9,
+        "totalNet": 27.67,
+        "lgsScore": 285.81,
+        "note": "👍 3 Doğru var, Fen 11D iyi; Matematikte sallamayı bırakmalı."
+      }
     },
     {
       "id": "no_424",
@@ -112,7 +220,19 @@
       "p2Name": "BESRA ELİŞ (Anne)",
       "p2Phone": "05416427271",
       "score": -10,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 25,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 2,
+        "fenY": 18,
+        "totalNet": -10.0,
+        "lgsScore": 161.51,
+        "note": "❌ Tüm denemede 60 yanlış işaretlemiş, birebir rehberlik gerekli."
+      }
     },
     {
       "id": "no_505",
@@ -123,7 +243,19 @@
       "p2Name": "TELLİ KALUL (Anne)",
       "p2Phone": "05455702065",
       "score": 15,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 17,
+        "matD": 3,
+        "matY": 5,
+        "matNet": 1.33,
+        "fenD": 8,
+        "fenY": 10,
+        "totalNet": 22.67,
+        "lgsScore": 264.76,
+        "note": "👍 3 Doğru yakalamış, 5 yanlışı boş bıraksa 3 net!"
+      }
     },
     {
       "id": "no_602",
@@ -134,7 +266,19 @@
       "p2Name": "AHMET DEVECİ (Baba)",
       "p2Phone": "05413902228",
       "score": 30,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 19,
+        "matD": 3,
+        "matY": 5,
+        "matNet": 1.33,
+        "fenD": 10,
+        "fenY": 10,
+        "totalNet": 20.34,
+        "lgsScore": 256.6,
+        "note": "👍 3 Doğru yapmış, yanlış işaretlemeyi azaltmalı."
+      }
     },
     {
       "id": "no_614",
@@ -145,7 +289,19 @@
       "p2Name": "ZÜBEYDE GÜRKAN (Anne)",
       "p2Phone": "05455816331",
       "score": 25,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 5,
+        "matD": 4,
+        "matY": 6,
+        "matNet": 2.0,
+        "fenD": 9,
+        "fenY": 11,
+        "totalNet": 31.0,
+        "lgsScore": 290.71,
+        "note": "👍 4 Doğru güzel başlangıç! 6 yanlışı boş bıraksa 4.00 net olacaktı."
+      }
     },
     {
       "id": "no_727",
@@ -156,7 +312,19 @@
       "p2Name": "AYŞEGÜL GÜNEŞ (Abla)",
       "p2Phone": "05437174708",
       "score": 15,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 99,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 0,
+        "fenY": 0,
+        "totalNet": 0.0,
+        "lgsScore": 0.0,
+        "note": "Denemeye Girmedi"
+      }
     },
     {
       "id": "no_771",
@@ -167,7 +335,19 @@
       "p2Name": "AYSEL KUTLU (Anne)",
       "p2Phone": "05465964023",
       "score": 15,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 20,
+        "matD": 1,
+        "matY": 7,
+        "matNet": -1.33,
+        "fenD": 11,
+        "fenY": 9,
+        "totalNet": 21.68,
+        "lgsScore": 252.24,
+        "note": "⚠️ Fen 11D güzel ama Matematikte 7 yanlış sallamış."
+      }
     },
     {
       "id": "no_777",
@@ -178,7 +358,19 @@
       "p2Name": "MEHMET ASLANDAĞ (Baba)",
       "p2Phone": "05415403268",
       "score": 35,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 14,
+        "matD": 5,
+        "matY": 5,
+        "matNet": 3.33,
+        "fenD": 11,
+        "fenY": 8,
+        "totalNet": 26.66,
+        "lgsScore": 274.77,
+        "note": "🌟 5 DOĞRU (3.33 Net) ile Matematik netinde sınıf 2.'si!"
+      }
     },
     {
       "id": "no_805",
@@ -189,7 +381,19 @@
       "p2Name": "BEKİR ŞEYHUN (Baba)",
       "p2Phone": "05444157824",
       "score": 25,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 10,
+        "matD": 4,
+        "matY": 7,
+        "matNet": 1.67,
+        "fenD": 9,
+        "fenY": 11,
+        "totalNet": 28.66,
+        "lgsScore": 285.34,
+        "note": "⚠️ 4 Doğru yapmış ama 7 yanlış yüzünden neti 1.67'ye düşmüş."
+      }
     },
     {
       "id": "no_807",
@@ -200,7 +404,19 @@
       "p2Name": "MESUT ORHAN (Baba)",
       "p2Phone": "05467271482",
       "score": 15,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 16,
+        "matD": 1,
+        "matY": 5,
+        "matNet": -0.67,
+        "fenD": 8,
+        "fenY": 10,
+        "totalNet": 25.33,
+        "lgsScore": 268.25,
+        "note": "⚠️ 5 yanlış işaretlemiş, sadece emin olduğu kazanım sorularını çözmeli."
+      }
     },
     {
       "id": "no_921",
@@ -211,7 +427,19 @@
       "p2Name": "FATMA CİN (Anne)",
       "p2Phone": "05468236476",
       "score": 10,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 3,
+        "matD": 0,
+        "matY": 1,
+        "matNet": -0.33,
+        "fenD": 11,
+        "fenY": 5,
+        "totalNet": 38.0,
+        "lgsScore": 316.86,
+        "note": "⏱️ SÜRE TUZAĞI: Türkçe 16D, Fen 11D yaptı ama Matematiğe hiç geçemedi!"
+      }
     },
     {
       "id": "no_957",
@@ -222,7 +450,19 @@
       "p2Name": "MEHMET ŞERİF PAÇAL (Baba)",
       "p2Phone": "05462492306",
       "score": 20,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 18,
+        "matD": 2,
+        "matY": 4,
+        "matNet": 0.67,
+        "fenD": 8,
+        "fenY": 11,
+        "totalNet": 23.34,
+        "lgsScore": 259.21,
+        "note": "👍 2 Doğru var, kazanım tekrarlarıyla 5 doğruyu hedeflemeli."
+      }
     },
     {
       "id": "no_984",
@@ -233,7 +473,19 @@
       "p2Name": "SAKİNE YILDIRIM (Anne)",
       "p2Phone": "05447475050",
       "score": 25,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 13,
+        "matD": 1,
+        "matY": 6,
+        "matNet": -1.0,
+        "fenD": 5,
+        "fenY": 9,
+        "totalNet": 30.33,
+        "lgsScore": 280.58,
+        "note": "⚠️ Türkçe 14D, Din 10D harika ama Matematikte 6 yanlış sallamış."
+      }
     },
     {
       "id": "no_1014",
@@ -244,7 +496,19 @@
       "p2Name": "SİNAN ÇELİK (Baba)",
       "p2Phone": "05435736391",
       "score": 15,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 7,
+        "matD": 4,
+        "matY": 6,
+        "matNet": 2.0,
+        "fenD": 7,
+        "fenY": 8,
+        "totalNet": 29.66,
+        "lgsScore": 286.47,
+        "note": "👍 4 Doğru yakalamış! Emin olmadığı 6 soruyu boş bırakmalı."
+      }
     },
     {
       "id": "no_1115",
@@ -255,7 +519,19 @@
       "p2Name": "ÜVEYŞ ÇİDACI (Anne)",
       "p2Phone": "05459771647",
       "score": 10,
-      "streak": 1
+      "streak": 1,
+      "extraSources": [],
+      "exam1": {
+        "rank": 8,
+        "matD": 4,
+        "matY": 3,
+        "matNet": 3.0,
+        "fenD": 6,
+        "fenY": 10,
+        "totalNet": 28.33,
+        "lgsScore": 286.24,
+        "note": "👏 4 Doğru 3 Yanlış (3.00 Net) - Sınıftaki en dengeli matematik netlerinden!"
+      }
     },
     {
       "id": "no_1132",
@@ -266,7 +542,19 @@
       "p2Name": "MAKBULE BAŞKUT (Anne)",
       "p2Phone": "05433263589",
       "score": 30,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 2,
+        "matD": 0,
+        "matY": 1,
+        "matNet": -0.33,
+        "fenD": 16,
+        "fenY": 3,
+        "totalNet": 43.34,
+        "lgsScore": 327.67,
+        "note": "⏱️ SÜRE TUZAĞI: Fen'den 16D 3Y yaptı ama Matematiğe hiç vakit bırakmadı!"
+      }
     },
     {
       "id": "no_1144",
@@ -277,7 +565,19 @@
       "p2Name": "MUHAMMET EFE ACAR (Abi)",
       "p2Phone": "05364778903",
       "score": 20,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 15,
+        "matD": 6,
+        "matY": 10,
+        "matNet": 2.67,
+        "fenD": 6,
+        "fenY": 13,
+        "totalNet": 23.67,
+        "lgsScore": 271.49,
+        "note": "🚨 6 DOĞRU ile en çok doğru yapan 2. öğrenci! Ama 10 yanlışla 3.33 netini çöpe atmış!"
+      }
     },
     {
       "id": "no_1150",
@@ -288,7 +588,19 @@
       "p2Name": "MEHMET EMİN İSTER (Baba)",
       "p2Phone": "05427696998",
       "score": 30,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 22,
+        "matD": 3,
+        "matY": 16,
+        "matNet": -2.33,
+        "fenD": 6,
+        "fenY": 14,
+        "totalNet": 11.32,
+        "lgsScore": 225.24,
+        "note": "🚨 REKOR SALLAMA: 3 Doğrusu var ama 16 YANLIŞ işaretlemiş! Boş bırakması şart!"
+      }
     },
     {
       "id": "no_1154",
@@ -299,7 +611,19 @@
       "p2Name": "",
       "p2Phone": "",
       "score": 0,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 21,
+        "matD": 1,
+        "matY": 2,
+        "matNet": 0.33,
+        "fenD": 4,
+        "fenY": 9,
+        "totalNet": 8.66,
+        "lgsScore": 229.51,
+        "note": "🌱 Çok yanlış yapmamış (1D 2Y), temel kazanım sorusu seçmeli."
+      }
     },
     {
       "id": "no_1168",
@@ -310,7 +634,19 @@
       "p2Name": "",
       "p2Phone": "",
       "score": 30,
-      "streak": 2
+      "streak": 2,
+      "extraSources": [],
+      "exam1": {
+        "rank": 12,
+        "matD": 5,
+        "matY": 6,
+        "matNet": 3.0,
+        "fenD": 9,
+        "fenY": 10,
+        "totalNet": 25.0,
+        "lgsScore": 280.68,
+        "note": "🔥 5 DOĞRU (3.00 Net)! Yanlışları boş bıraksa 5 nete çıkacak."
+      }
     },
     {
       "id": "no_9133",
@@ -321,7 +657,19 @@
       "p2Name": "ÖZLEM ÖZBAKIRCI (Anne)",
       "p2Phone": "05426723865",
       "score": 0,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 99,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 0,
+        "fenY": 0,
+        "totalNet": 0.0,
+        "lgsScore": 0.0,
+        "note": "Denemeye Girmedi"
+      }
     },
     {
       "id": "no_9134",
@@ -332,7 +680,19 @@
       "p2Name": "",
       "p2Phone": "",
       "score": 0,
-      "streak": 0
+      "streak": 0,
+      "extraSources": [],
+      "exam1": {
+        "rank": 99,
+        "matD": 0,
+        "matY": 0,
+        "matNet": 0.0,
+        "fenD": 0,
+        "fenY": 0,
+        "totalNet": 0.0,
+        "lgsScore": 0.0,
+        "note": "Denemeye Girmedi"
+      }
     }
   ],
   "dailyRecords": {

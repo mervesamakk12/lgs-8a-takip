@@ -945,6 +945,83 @@
       padding: 10px 8px;
     }
   }
+
+  .chk-btn.extra-src {
+    background: #1e1b4b;
+    border-color: #818cf8;
+    color: #c7d2fe;
+  }
+  .chk-btn.extra-src:hover, .chk-btn.extra-src.active {
+    background: #4f46e5;
+    border-color: #a5b4fc;
+    color: #fff;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+  }
+  .source-badges-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 3px;
+  }
+  .source-tag {
+    background: rgba(99, 102, 241, 0.22);
+    border: 1px solid #6366f1;
+    color: #e0e7ff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .quick-pub-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .pub-chip {
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: #e2e8f0;
+    padding: 6px 11px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pub-chip:hover {
+    background: #4f46e5;
+    border-color: #818cf8;
+    color: #fff;
+  }
+  .exam-badge-good {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid #10b981;
+    color: #6ee7b7;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 800;
+  }
+  .exam-badge-warn {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid #f59e0b;
+    color: #fde68a;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 800;
+  }
+  .exam-badge-bad {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 800;
+  }
+
 </style>
 </head>
 <body class="is-locked">
@@ -1005,6 +1082,7 @@
   <div class="toolbar">
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('checkTab', this)">📋 Günlük Kontrol (32)</button>
+      <button class="tab-btn" onclick="switchTab('examTab', this)">📊 1. Deneme Analizi & Ödül</button>
       <button class="tab-btn" onclick="switchTab('leaderboardTab', this)">🏆 Liderlik & Podyum</button>
       <button class="tab-btn" onclick="switchTab('rewardsTab', this)">🎁 Ödül Pazarı & Çark</button>
       <button class="tab-btn" onclick="switchTab('formulasTab', this)">⚡ Üslü İfadeler Kural Kartı</button>
@@ -1107,6 +1185,44 @@
           </tr>
         </thead>
         <tbody id="parentTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- SEKME: 1. DENEME ANALİZİ & DENEME ÖDÜL PUANI -->
+  <div id="examTab" class="tab-panel">
+    <div style="background:rgba(30,41,59,0.92); border:2px solid #6366f1; border-radius:18px; padding:18px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:20px; color:#facc15;">📊 İSEM 8. Sınıf LGS 1. Deneme Analizi & Ödüllendirme</h2>
+          <p style="font-size:13px; color:#cbd5e1; margin-top:4px;">
+            <b>Altın Kural:</b> Sınıfta 5-8 doğru yapan öğrencilerimiz yanlış salladıkları için net kaybetti. Bir sonraki denemede <b>yanlışını 3'ün altına düşürene ve netini artırana +15 / +20 Deneme Ödül Puanı</b> verilir!
+          </p>
+        </div>
+        <div class="teacher-only" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="action-btn btn-unlock" onclick="rewardTopExamPerformers()">🏆 4+ Doğru Yapanlara Toplu +15 Puan Ver</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="parent-table">
+        <thead>
+          <tr>
+            <th>Snf Sıra</th>
+            <th>Öğrenci</th>
+            <th>Mat Doğru</th>
+            <th>Mat Yanlış</th>
+            <th>Mat Net</th>
+            <th>Sallamasa Neti</th>
+            <th>Fen (D/Y)</th>
+            <th>LGS Puanı</th>
+            <th>Koçluk & Teşhis Notu</th>
+            <th class="teacher-only">Deneme Ödülü Ver</th>
+          </tr>
+        </thead>
+        <tbody id="examTableBody"></tbody>
       </table>
     </div>
   </div>
@@ -1496,6 +1612,51 @@
   </div>
 </div>
 
+
+<!-- MODAL 7: EKSTRA KAYNAK & SORU ÇÖZÜMÜ (+15 PUAN) -->
+<div class="modal-overlay" id="extraSourceModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>📚 Ekstra Kaynak Çözümü Ekle (+15 Puan)</h2>
+      <button class="close-modal" onclick="closeModal('extraSourceModal')">&times;</button>
+    </div>
+    <input type="hidden" id="extraSourceStudentId">
+    <p style="font-size:13px; color:#cbd5e1; margin-bottom:10px;">
+      Öğrencimiz <b id="extraSourceStudentName" style="color:#facc15;"></b> verdiğiniz ödev dışında ekstra bir kaynaktan soru çözdüyse kaynağın adını seçin veya yazın (+15 Puan eklenir):
+    </p>
+
+    <label style="font-size:12px; font-weight:700; color:#94a3b8; display:block; margin-bottom:6px;">Hızlı Yayın Seçimi (Tıklayın):</label>
+    <div class="quick-pub-grid">
+      <button type="button" class="pub-chip" onclick="selectQuickPub('İSEM Yayınları')">📘 İSEM Yayınları</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Mozaik Yayınları')">📙 Mozaik Yayınları</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Hız Yayınları')">⚡ Hız Yayınları</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Fenomen')">🔥 Fenomen</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Okyanus Master')">🌊 Okyanus</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Çanta Yayınları')">🎒 Çanta</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Sinan Kuzucu')">🎯 Sinan Kuzucu</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('Ankara Güçlendirme')">🏛️ Ankara Yay.</button>
+      <button type="button" class="pub-chip" onclick="selectQuickPub('MEB Çalışma Kitabı')">🇹🇷 MEB Kitabı</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:10px;">
+      <div class="form-group">
+        <label>Çözülen Kaynak / Yayın Adı:</label>
+        <input type="text" id="extraSourceBookInput" class="form-control" placeholder="Örn: Hız Yayınları Üslü İfadeler">
+      </div>
+      <div class="form-group">
+        <label>Soru Sayısı / Konu:</label>
+        <input type="text" id="extraSourceCountInput" class="form-control" placeholder="Örn: 40 Soru">
+      </div>
+    </div>
+
+    <div id="existingSourcesContainer" style="margin-top:8px; margin-bottom:12px;"></div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+      <button class="action-btn btn-unlock" onclick="saveExtraSourceEntry()">🌟 +15 Puan Ver ve Kaynağı Kaydet</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast">İşlem Başarılı!</div>
 
 <script>
@@ -1542,7 +1703,7 @@
     { id: 'no_9252', no: '9252', name: 'NASREDDİN ALABDULĞAFUR', p1Name: 'ZEYNEP EĞİT (Anne)',           p1Phone: '05431088883', p2Name: 'İBRAHİM ALABDULĞAFUR (Baba)',   p2Phone: '05432373617', score: 0, streak: 0 }
   ];
 
-  const BAKED_SYNC_STATE = {"className": "8-A", "currentTopic": "Üslü İfadeler İlk 50 soru", "currentDate": "2026-10-26", "updatedAt": 1793123081781, "students": [{"id": "no_94", "no": "94", "name": "SALİM GÜNGÖRDİ", "p1Name": "YASİN GÜNGÖRDİ (Baba)", "p1Phone": "05425722000", "p2Name": "", "p2Phone": "", "score": 10, "streak": 1}, {"id": "no_107", "no": "107", "name": "NEHİR YABATU", "p1Name": "İBRAHİM YABATU (Baba)", "p1Phone": "05469044408", "p2Name": "SELMA YABATU (Anne)", "p2Phone": "05439044434", "score": 25, "streak": 2}, {"id": "no_126", "no": "126", "name": "AHMET ÇELİKLİ", "p1Name": "BİŞAR ÇELİKLİ (Baba)", "p1Phone": "05435278344", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0}, {"id": "no_158", "no": "158", "name": "AHMET POLAT", "p1Name": "DENİZ POLAT (Baba)", "p1Phone": "05439443357", "p2Name": "DİLŞAH POLAT (Anne)", "p2Phone": "05413122896", "score": 50, "streak": 3}, {"id": "no_160", "no": "160", "name": "NİSANUR İKİER", "p1Name": "HALİT İKİER (Baba)", "p1Phone": "05428185583", "p2Name": "MERYEM İKİER (Anne)", "p2Phone": "05428186583", "score": 15, "streak": 1}, {"id": "no_193", "no": "193", "name": "EVA HAYDAR", "p1Name": "ŞİRİN HAYDAR (Anne)", "p1Phone": "05365894360", "p2Name": "MUHAMMED HAYDAR (Baba)", "p2Phone": "05382282219", "score": 20, "streak": 1}, {"id": "no_262", "no": "262", "name": "ABDULĞANİ ALKAN", "p1Name": "SALAHADDİN ALKAN (Baba)", "p1Phone": "05422470808", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0}, {"id": "no_396", "no": "396", "name": "DİJLE NEVAL LUZUM", "p1Name": "AYSEL LUZUM (Anne)", "p1Phone": "05428408663", "p2Name": "EYÜP LUZUM (Baba)", "p2Phone": "05415873328", "score": 45, "streak": 3}, {"id": "no_421", "no": "421", "name": "ECRİN TURAN", "p1Name": "AYŞE TURAN (Anne)", "p1Phone": "05435102852", "p2Name": "MEHMET KOYUNCU", "p2Phone": "", "score": 15, "streak": 1}, {"id": "no_424", "no": "424", "name": "EDA YAĞMUR ELİŞ", "p1Name": "MEHMET ELİŞ (Baba)", "p1Phone": "05422739736", "p2Name": "BESRA ELİŞ (Anne)", "p2Phone": "05416427271", "score": -10, "streak": 0}, {"id": "no_505", "no": "505", "name": "ENES KALUL", "p1Name": "EYLEM KALUL (Abla)", "p1Phone": "05424432729", "p2Name": "TELLİ KALUL (Anne)", "p2Phone": "05455702065", "score": 15, "streak": 1}, {"id": "no_602", "no": "602", "name": "İLKNUR DEVECİ", "p1Name": "ZELİHA DEVECİ (Anne)", "p1Phone": "05466063963", "p2Name": "AHMET DEVECİ (Baba)", "p2Phone": "05413902228", "score": 30, "streak": 2}, {"id": "no_614", "no": "614", "name": "ZEYNEP SUDE GÜRKAN", "p1Name": "MEHMET GÜRKAN (Baba)", "p1Phone": "05427358626", "p2Name": "ZÜBEYDE GÜRKAN (Anne)", "p2Phone": "05455816331", "score": 25, "streak": 2}, {"id": "no_727", "no": "727", "name": "TUBA GÜNEŞ", "p1Name": "GÜLER GÜNEŞ (Anne)", "p1Phone": "05419215477", "p2Name": "AYŞEGÜL GÜNEŞ (Abla)", "p2Phone": "05437174708", "score": 15, "streak": 1}, {"id": "no_771", "no": "771", "name": "KÜBRA KUTLU", "p1Name": "SEYDİ KUTLU (Baba)", "p1Phone": "05422529179", "p2Name": "AYSEL KUTLU (Anne)", "p2Phone": "05465964023", "score": 15, "streak": 1}, {"id": "no_777", "no": "777", "name": "ZEYNEP ASLANDAĞ", "p1Name": "AYŞE ASLANDAĞ (Anne)", "p1Phone": "05433867660", "p2Name": "MEHMET ASLANDAĞ (Baba)", "p2Phone": "05415403268", "score": 35, "streak": 2}, {"id": "no_805", "no": "805", "name": "SİNAN ŞEYHUN", "p1Name": "VASFİYE ŞEYHUN (Anne)", "p1Phone": "05438023221", "p2Name": "BEKİR ŞEYHUN (Baba)", "p2Phone": "05444157824", "score": 25, "streak": 2}, {"id": "no_807", "no": "807", "name": "ELİF NUR ORHAN", "p1Name": "ARZU ORHAN (Anne)", "p1Phone": "05422959222", "p2Name": "MESUT ORHAN (Baba)", "p2Phone": "05467271482", "score": 15, "streak": 0}, {"id": "no_921", "no": "921", "name": "ELİFNUR CİN", "p1Name": "MEHMET CİN (Baba)", "p1Phone": "05330158206", "p2Name": "FATMA CİN (Anne)", "p2Phone": "05468236476", "score": 10, "streak": 1}, {"id": "no_957", "no": "957", "name": "HİCRET PAÇAL", "p1Name": "HACİRE PAÇAL (Anne)", "p1Phone": "05413667642", "p2Name": "MEHMET ŞERİF PAÇAL (Baba)", "p2Phone": "05462492306", "score": 20, "streak": 2}, {"id": "no_984", "no": "984", "name": "KADİR YILDIRIM", "p1Name": "LOKMAN YILDIRIM (Baba)", "p1Phone": "05389729442", "p2Name": "SAKİNE YILDIRIM (Anne)", "p2Phone": "05447475050", "score": 25, "streak": 1}, {"id": "no_1014", "no": "1014", "name": "MELEK NUR ÇELİK", "p1Name": "SAADET ÇELİK (Anne)", "p1Phone": "05426103880", "p2Name": "SİNAN ÇELİK (Baba)", "p2Phone": "05435736391", "score": 15, "streak": 1}, {"id": "no_1115", "no": "1115", "name": "MUHAMMED MURSİ ÇİDACI", "p1Name": "TUBA ÇİDACI (Abla)", "p1Phone": "05538593763", "p2Name": "ÜVEYŞ ÇİDACI (Anne)", "p2Phone": "05459771647", "score": 10, "streak": 1}, {"id": "no_1132", "no": "1132", "name": "MUSTAFA BAŞKUT", "p1Name": "HANİFİ BAŞKUT (Baba)", "p1Phone": "05423483655", "p2Name": "MAKBULE BAŞKUT (Anne)", "p2Phone": "05433263589", "score": 30, "streak": 2}, {"id": "no_1144", "no": "1144", "name": "ÖMER ACAR", "p1Name": "SABAHAT ACAR (Anne)", "p1Phone": "05365534171", "p2Name": "MUHAMMET EFE ACAR (Abi)", "p2Phone": "05364778903", "score": 20, "streak": 2}, {"id": "no_1150", "no": "1150", "name": "ÖMER FARUK İSTER", "p1Name": "İPEK İSTER (Anne)", "p1Phone": "05427698226", "p2Name": "MEHMET EMİN İSTER (Baba)", "p2Phone": "05427696998", "score": 30, "streak": 2}, {"id": "no_1154", "no": "1154", "name": "RABİA ÇELİK", "p1Name": "İDE ÇELİK (Anne)", "p1Phone": "05431554494", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0}, {"id": "no_1168", "no": "1168", "name": "RÜMEYSA SIĞIRCI", "p1Name": "ÖZLEM SIĞIRCI (Anne)", "p1Phone": "05444317127", "p2Name": "", "p2Phone": "", "score": 30, "streak": 2}, {"id": "no_9133", "no": "9133", "name": "YAĞMUR ÖZBAKIRCI", "p1Name": "ALİ ÖZBAKIRCI (Baba)", "p1Phone": "05422003865", "p2Name": "ÖZLEM ÖZBAKIRCI (Anne)", "p2Phone": "05426723865", "score": 0, "streak": 0}, {"id": "no_9134", "no": "9134", "name": "İBRAHİM ELİSA ELCELLO", "p1Name": "İBRAHİM ELCELLO (Baba)", "p1Phone": "05418998843", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0}], "dailyRecords": {"2026-10-21": {"no_94": {"hw": null, "review": false, "board": false}, "no_107": {"hw": null, "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": null, "review": false, "board": false}, "no_160": {"hw": null, "review": false, "board": false}, "no_193": {"hw": null, "review": false, "board": false}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": null, "review": false, "board": false}, "no_421": {"hw": null, "review": false, "board": false}, "no_424": {"hw": null, "review": false, "board": false}, "no_505": {"hw": null, "review": false, "board": false}, "no_602": {"hw": null, "review": false, "board": false}, "no_614": {"hw": null, "review": false, "board": false}, "no_727": {"hw": null, "review": false, "board": false}, "no_771": {"hw": null, "review": false, "board": false}, "no_777": {"hw": null, "review": false, "board": false}, "no_805": {"hw": null, "review": false, "board": false}, "no_807": {"hw": null, "review": false, "board": false}, "no_921": {"hw": null, "review": false, "board": false}, "no_957": {"hw": null, "review": false, "board": false}, "no_984": {"hw": null, "review": false, "board": false}, "no_1014": {"hw": null, "review": false, "board": false}, "no_1115": {"hw": null, "review": false, "board": false}, "no_1132": {"hw": null, "review": false, "board": false}, "no_1144": {"hw": null, "review": false, "board": false}, "no_1150": {"hw": null, "review": false, "board": false}, "no_1154": {"hw": null, "review": false, "board": false}, "no_1168": {"hw": null, "review": false, "board": false}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}, "no_9252": {"hw": "full", "review": false, "board": false}}, "2026-10-22": {"no_94": {"hw": "none", "review": false, "board": true}, "no_107": {"hw": "half", "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": "full", "review": false, "board": false}, "no_160": {"hw": "full", "review": false, "board": false}, "no_193": {"hw": "full", "review": false, "board": false}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": "full", "review": false, "board": false}, "no_421": {"hw": "full", "review": false, "board": false}, "no_424": {"hw": "none", "review": false, "board": false}, "no_505": {"hw": "none", "review": false, "board": false}, "no_602": {"hw": "half", "review": false, "board": false}, "no_614": {"hw": "half", "review": false, "board": false}, "no_727": {"hw": "half", "review": false, "board": true}, "no_771": {"hw": "full", "review": false, "board": false}, "no_777": {"hw": "full", "review": false, "board": false}, "no_805": {"hw": "half", "review": false, "board": false}, "no_807": {"hw": "full", "review": false, "board": false}, "no_921": {"hw": "half", "review": false, "board": false}, "no_957": {"hw": "none", "review": false, "board": false}, "no_984": {"hw": "half", "review": false, "board": false}, "no_1014": {"hw": "none", "review": false, "board": false}, "no_1115": {"hw": "full", "review": false, "board": true}, "no_1132": {"hw": "full", "review": false, "board": false}, "no_1144": {"hw": "none", "review": false, "board": false}, "no_1150": {"hw": "half", "review": false, "board": false}, "no_1154": {"hw": "none", "review": false, "board": false}, "no_1168": {"hw": "half", "review": false, "board": false}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}, "no_9252": {"hw": null, "review": false, "board": false}}, "2026-10-23": {"no_94": {"hw": "full", "review": false, "board": false}, "no_107": {"hw": "full", "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": "full", "review": false, "board": true}, "no_160": {"hw": "none", "review": false, "board": false}, "no_193": {"hw": null, "review": false, "board": true}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": "full", "review": false, "board": true}, "no_421": {"hw": "none", "review": false, "board": false}, "no_424": {"hw": "none", "review": false, "board": false}, "no_505": {"hw": "full", "review": false, "board": false}, "no_602": {"hw": "full", "review": false, "board": false}, "no_614": {"hw": "full", "review": false, "board": false}, "no_727": {"hw": "none", "review": false, "board": false}, "no_771": {"hw": "none", "review": false, "board": false}, "no_777": {"hw": "half", "review": false, "board": true}, "no_805": {"hw": "full", "review": false, "board": false}, "no_807": {"hw": "full", "review": false, "board": false}, "no_921": {"hw": "none", "review": false, "board": false}, "no_957": {"hw": "full", "review": false, "board": true}, "no_984": {"hw": "full", "review": false, "board": true}, "no_1014": {"hw": "half", "review": false, "board": false}, "no_1115": {"hw": "none", "review": false, "board": false}, "no_1132": {"hw": "half", "review": false, "board": false}, "no_1144": {"hw": "full", "review": false, "board": true}, "no_1150": {"hw": "full", "review": false, "board": true}, "no_1154": {"hw": null, "review": false, "board": false}, "no_1168": {"hw": "full", "review": false, "board": true}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}, "no_9252": {"hw": null, "review": false, "board": false}}, "2026-10-26": {"no_94": {"hw": null, "review": false, "board": false}, "no_107": {"hw": "full", "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": "full", "review": true, "board": false}, "no_160": {"hw": "full", "review": false, "board": false}, "no_193": {"hw": null, "review": false, "board": true}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": "full", "review": false, "board": false}, "no_421": {"hw": "full", "review": false, "board": false}, "no_424": {"hw": null, "review": false, "board": false}, "no_505": {"hw": "half", "review": false, "board": true}, "no_602": {"hw": "full", "review": false, "board": true}, "no_614": {"hw": "full", "review": false, "board": false}, "no_727": {"hw": "full", "review": false, "board": false}, "no_771": {"hw": "full", "review": false, "board": false}, "no_777": {"hw": "full", "review": false, "board": true}, "no_805": {"hw": "full", "review": false, "board": false}, "no_807": {"hw": "none", "review": false, "board": false}, "no_921": {"hw": "full", "review": false, "board": false}, "no_957": {"hw": "full", "review": false, "board": false}, "no_984": {"hw": null, "review": false, "board": true}, "no_1014": {"hw": "full", "review": false, "board": true}, "no_1115": {"hw": null, "review": false, "board": false}, "no_1132": {"hw": "full", "review": false, "board": true}, "no_1144": {"hw": "full", "review": false, "board": false}, "no_1150": {"hw": "full", "review": false, "board": false}, "no_1154": {"hw": null, "review": false, "board": true}, "no_1168": {"hw": "full", "review": false, "board": false}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}}}};
+  const BAKED_SYNC_STATE = {"className": "8-A", "currentTopic": "Üslü İfadeler İlk 50 soru", "currentDate": "2026-10-26", "updatedAt": 1793123082781, "students": [{"id": "no_94", "no": "94", "name": "SALİM GÜNGÖRDİ", "p1Name": "YASİN GÜNGÖRDİ (Baba)", "p1Phone": "05425722000", "p2Name": "", "p2Phone": "", "score": 10, "streak": 1, "extraSources": [], "exam1": {"rank": 11, "matD": 5, "matY": 7, "matNet": 2.67, "fenD": 8, "fenY": 12, "totalNet": 27.67, "lgsScore": 283.09, "note": "🔥 5 DOĞRU! Ancak 7 yanlış salladığı için neti yarıya düşmüş."}}, {"id": "no_107", "no": "107", "name": "NEHİR YABATU", "p1Name": "İBRAHİM YABATU (Baba)", "p1Phone": "05469044408", "p2Name": "SELMA YABATU (Anne)", "p2Phone": "05439044434", "score": 25, "streak": 2, "extraSources": [], "exam1": {"rank": 4, "matD": 1, "matY": 5, "matNet": -0.67, "fenD": 9, "fenY": 7, "totalNet": 34.99, "lgsScore": 299.77, "note": "⚠️ Türkçe 14D, Din 10D çok iyi; Matematikte bilmediğini boş bırakmalı."}}, {"id": "no_126", "no": "126", "name": "AHMET ÇELİKLİ", "p1Name": "BİŞAR ÇELİKLİ (Baba)", "p1Phone": "05435278344", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0, "extraSources": [], "exam1": {"rank": 99, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 0, "fenY": 0, "totalNet": 0.0, "lgsScore": 0.0, "note": "Denemeye Girmedi"}}, {"id": "no_158", "no": "158", "name": "AHMET POLAT", "p1Name": "DENİZ POLAT (Baba)", "p1Phone": "05439443357", "p2Name": "DİLŞAH POLAT (Anne)", "p2Phone": "05413122896", "score": 50, "streak": 3, "extraSources": [], "exam1": {"rank": 24, "matD": 2, "matY": 10, "matNet": -1.33, "fenD": 8, "fenY": 8, "totalNet": 4.67, "lgsScore": 215.88, "note": "🚨 Ödev lideri (50p) ama denemede 10 yanlış sallamış! Sadece bildiği 5 soruyu çözmeli."}}, {"id": "no_160", "no": "160", "name": "NİSANUR İKİER", "p1Name": "HALİT İKİER (Baba)", "p1Phone": "05428185583", "p2Name": "MERYEM İKİER (Anne)", "p2Phone": "05428186583", "score": 15, "streak": 1, "extraSources": [], "exam1": {"rank": 1, "matD": 8, "matY": 5, "matNet": 6.33, "fenD": 14, "fenY": 6, "totalNet": 42.67, "lgsScore": 341.65, "note": "🌟 Sınıf 1.'si & Mat Lideri! 5 yanlışı azaltırsa 8+ nete çıkar."}}, {"id": "no_193", "no": "193", "name": "EVA HAYDAR", "p1Name": "ŞİRİN HAYDAR (Anne)", "p1Phone": "05365894360", "p2Name": "MUHAMMED HAYDAR (Baba)", "p2Phone": "05382282219", "score": 20, "streak": 1, "extraSources": [], "exam1": {"rank": 23, "matD": 6, "matY": 10, "matNet": 2.67, "fenD": 4, "fenY": 12, "totalNet": 9.0, "lgsScore": 223.26, "note": "🚨 6 DOĞRU ile en çok doğru yapan 2. öğrenci! Ama 10 yanlış sallayarak kendine yazık etmiş!"}}, {"id": "no_262", "no": "262", "name": "ABDULĞANİ ALKAN", "p1Name": "SALAHADDİN ALKAN (Baba)", "p1Phone": "05422470808", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0, "extraSources": [], "exam1": {"rank": 99, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 0, "fenY": 0, "totalNet": 0.0, "lgsScore": 0.0, "note": "Denemeye Girmedi"}}, {"id": "no_396", "no": "396", "name": "DİJLE NEVAL LUZUM", "p1Name": "AYSEL LUZUM (Anne)", "p1Phone": "05428408663", "p2Name": "EYÜP LUZUM (Baba)", "p2Phone": "05415873328", "score": 45, "streak": 3, "extraSources": [], "exam1": {"rank": 6, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 10, "fenY": 7, "totalNet": 31.01, "lgsScore": 290.46, "note": "⏱️ SÜRE TUZAĞI: Fen 10D yaptı, Matematik kitapçığına hiç dokunmadı (Tamamen Boş)!"}}, {"id": "no_421", "no": "421", "name": "ECRİN TURAN", "p1Name": "AYŞE TURAN (Anne)", "p1Phone": "05435102852", "p2Name": "MEHMET KOYUNCU", "p2Phone": "", "score": 15, "streak": 1, "extraSources": [], "exam1": {"rank": 9, "matD": 3, "matY": 5, "matNet": 1.33, "fenD": 11, "fenY": 9, "totalNet": 27.67, "lgsScore": 285.81, "note": "👍 3 Doğru var, Fen 11D iyi; Matematikte sallamayı bırakmalı."}}, {"id": "no_424", "no": "424", "name": "EDA YAĞMUR ELİŞ", "p1Name": "MEHMET ELİŞ (Baba)", "p1Phone": "05422739736", "p2Name": "BESRA ELİŞ (Anne)", "p2Phone": "05416427271", "score": -10, "streak": 0, "extraSources": [], "exam1": {"rank": 25, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 2, "fenY": 18, "totalNet": -10.0, "lgsScore": 161.51, "note": "❌ Tüm denemede 60 yanlış işaretlemiş, birebir rehberlik gerekli."}}, {"id": "no_505", "no": "505", "name": "ENES KALUL", "p1Name": "EYLEM KALUL (Abla)", "p1Phone": "05424432729", "p2Name": "TELLİ KALUL (Anne)", "p2Phone": "05455702065", "score": 15, "streak": 1, "extraSources": [], "exam1": {"rank": 17, "matD": 3, "matY": 5, "matNet": 1.33, "fenD": 8, "fenY": 10, "totalNet": 22.67, "lgsScore": 264.76, "note": "👍 3 Doğru yakalamış, 5 yanlışı boş bıraksa 3 net!"}}, {"id": "no_602", "no": "602", "name": "İLKNUR DEVECİ", "p1Name": "ZELİHA DEVECİ (Anne)", "p1Phone": "05466063963", "p2Name": "AHMET DEVECİ (Baba)", "p2Phone": "05413902228", "score": 30, "streak": 2, "extraSources": [], "exam1": {"rank": 19, "matD": 3, "matY": 5, "matNet": 1.33, "fenD": 10, "fenY": 10, "totalNet": 20.34, "lgsScore": 256.6, "note": "👍 3 Doğru yapmış, yanlış işaretlemeyi azaltmalı."}}, {"id": "no_614", "no": "614", "name": "ZEYNEP SUDE GÜRKAN", "p1Name": "MEHMET GÜRKAN (Baba)", "p1Phone": "05427358626", "p2Name": "ZÜBEYDE GÜRKAN (Anne)", "p2Phone": "05455816331", "score": 25, "streak": 2, "extraSources": [], "exam1": {"rank": 5, "matD": 4, "matY": 6, "matNet": 2.0, "fenD": 9, "fenY": 11, "totalNet": 31.0, "lgsScore": 290.71, "note": "👍 4 Doğru güzel başlangıç! 6 yanlışı boş bıraksa 4.00 net olacaktı."}}, {"id": "no_727", "no": "727", "name": "TUBA GÜNEŞ", "p1Name": "GÜLER GÜNEŞ (Anne)", "p1Phone": "05419215477", "p2Name": "AYŞEGÜL GÜNEŞ (Abla)", "p2Phone": "05437174708", "score": 15, "streak": 1, "extraSources": [], "exam1": {"rank": 99, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 0, "fenY": 0, "totalNet": 0.0, "lgsScore": 0.0, "note": "Denemeye Girmedi"}}, {"id": "no_771", "no": "771", "name": "KÜBRA KUTLU", "p1Name": "SEYDİ KUTLU (Baba)", "p1Phone": "05422529179", "p2Name": "AYSEL KUTLU (Anne)", "p2Phone": "05465964023", "score": 15, "streak": 1, "extraSources": [], "exam1": {"rank": 20, "matD": 1, "matY": 7, "matNet": -1.33, "fenD": 11, "fenY": 9, "totalNet": 21.68, "lgsScore": 252.24, "note": "⚠️ Fen 11D güzel ama Matematikte 7 yanlış sallamış."}}, {"id": "no_777", "no": "777", "name": "ZEYNEP ASLANDAĞ", "p1Name": "AYŞE ASLANDAĞ (Anne)", "p1Phone": "05433867660", "p2Name": "MEHMET ASLANDAĞ (Baba)", "p2Phone": "05415403268", "score": 35, "streak": 2, "extraSources": [], "exam1": {"rank": 14, "matD": 5, "matY": 5, "matNet": 3.33, "fenD": 11, "fenY": 8, "totalNet": 26.66, "lgsScore": 274.77, "note": "🌟 5 DOĞRU (3.33 Net) ile Matematik netinde sınıf 2.'si!"}}, {"id": "no_805", "no": "805", "name": "SİNAN ŞEYHUN", "p1Name": "VASFİYE ŞEYHUN (Anne)", "p1Phone": "05438023221", "p2Name": "BEKİR ŞEYHUN (Baba)", "p2Phone": "05444157824", "score": 25, "streak": 2, "extraSources": [], "exam1": {"rank": 10, "matD": 4, "matY": 7, "matNet": 1.67, "fenD": 9, "fenY": 11, "totalNet": 28.66, "lgsScore": 285.34, "note": "⚠️ 4 Doğru yapmış ama 7 yanlış yüzünden neti 1.67'ye düşmüş."}}, {"id": "no_807", "no": "807", "name": "ELİF NUR ORHAN", "p1Name": "ARZU ORHAN (Anne)", "p1Phone": "05422959222", "p2Name": "MESUT ORHAN (Baba)", "p2Phone": "05467271482", "score": 15, "streak": 0, "extraSources": [], "exam1": {"rank": 16, "matD": 1, "matY": 5, "matNet": -0.67, "fenD": 8, "fenY": 10, "totalNet": 25.33, "lgsScore": 268.25, "note": "⚠️ 5 yanlış işaretlemiş, sadece emin olduğu kazanım sorularını çözmeli."}}, {"id": "no_921", "no": "921", "name": "ELİFNUR CİN", "p1Name": "MEHMET CİN (Baba)", "p1Phone": "05330158206", "p2Name": "FATMA CİN (Anne)", "p2Phone": "05468236476", "score": 10, "streak": 1, "extraSources": [], "exam1": {"rank": 3, "matD": 0, "matY": 1, "matNet": -0.33, "fenD": 11, "fenY": 5, "totalNet": 38.0, "lgsScore": 316.86, "note": "⏱️ SÜRE TUZAĞI: Türkçe 16D, Fen 11D yaptı ama Matematiğe hiç geçemedi!"}}, {"id": "no_957", "no": "957", "name": "HİCRET PAÇAL", "p1Name": "HACİRE PAÇAL (Anne)", "p1Phone": "05413667642", "p2Name": "MEHMET ŞERİF PAÇAL (Baba)", "p2Phone": "05462492306", "score": 20, "streak": 2, "extraSources": [], "exam1": {"rank": 18, "matD": 2, "matY": 4, "matNet": 0.67, "fenD": 8, "fenY": 11, "totalNet": 23.34, "lgsScore": 259.21, "note": "👍 2 Doğru var, kazanım tekrarlarıyla 5 doğruyu hedeflemeli."}}, {"id": "no_984", "no": "984", "name": "KADİR YILDIRIM", "p1Name": "LOKMAN YILDIRIM (Baba)", "p1Phone": "05389729442", "p2Name": "SAKİNE YILDIRIM (Anne)", "p2Phone": "05447475050", "score": 25, "streak": 1, "extraSources": [], "exam1": {"rank": 13, "matD": 1, "matY": 6, "matNet": -1.0, "fenD": 5, "fenY": 9, "totalNet": 30.33, "lgsScore": 280.58, "note": "⚠️ Türkçe 14D, Din 10D harika ama Matematikte 6 yanlış sallamış."}}, {"id": "no_1014", "no": "1014", "name": "MELEK NUR ÇELİK", "p1Name": "SAADET ÇELİK (Anne)", "p1Phone": "05426103880", "p2Name": "SİNAN ÇELİK (Baba)", "p2Phone": "05435736391", "score": 15, "streak": 1, "extraSources": [], "exam1": {"rank": 7, "matD": 4, "matY": 6, "matNet": 2.0, "fenD": 7, "fenY": 8, "totalNet": 29.66, "lgsScore": 286.47, "note": "👍 4 Doğru yakalamış! Emin olmadığı 6 soruyu boş bırakmalı."}}, {"id": "no_1115", "no": "1115", "name": "MUHAMMED MURSİ ÇİDACI", "p1Name": "TUBA ÇİDACI (Abla)", "p1Phone": "05538593763", "p2Name": "ÜVEYŞ ÇİDACI (Anne)", "p2Phone": "05459771647", "score": 10, "streak": 1, "extraSources": [], "exam1": {"rank": 8, "matD": 4, "matY": 3, "matNet": 3.0, "fenD": 6, "fenY": 10, "totalNet": 28.33, "lgsScore": 286.24, "note": "👏 4 Doğru 3 Yanlış (3.00 Net) - Sınıftaki en dengeli matematik netlerinden!"}}, {"id": "no_1132", "no": "1132", "name": "MUSTAFA BAŞKUT", "p1Name": "HANİFİ BAŞKUT (Baba)", "p1Phone": "05423483655", "p2Name": "MAKBULE BAŞKUT (Anne)", "p2Phone": "05433263589", "score": 30, "streak": 2, "extraSources": [], "exam1": {"rank": 2, "matD": 0, "matY": 1, "matNet": -0.33, "fenD": 16, "fenY": 3, "totalNet": 43.34, "lgsScore": 327.67, "note": "⏱️ SÜRE TUZAĞI: Fen'den 16D 3Y yaptı ama Matematiğe hiç vakit bırakmadı!"}}, {"id": "no_1144", "no": "1144", "name": "ÖMER ACAR", "p1Name": "SABAHAT ACAR (Anne)", "p1Phone": "05365534171", "p2Name": "MUHAMMET EFE ACAR (Abi)", "p2Phone": "05364778903", "score": 20, "streak": 2, "extraSources": [], "exam1": {"rank": 15, "matD": 6, "matY": 10, "matNet": 2.67, "fenD": 6, "fenY": 13, "totalNet": 23.67, "lgsScore": 271.49, "note": "🚨 6 DOĞRU ile en çok doğru yapan 2. öğrenci! Ama 10 yanlışla 3.33 netini çöpe atmış!"}}, {"id": "no_1150", "no": "1150", "name": "ÖMER FARUK İSTER", "p1Name": "İPEK İSTER (Anne)", "p1Phone": "05427698226", "p2Name": "MEHMET EMİN İSTER (Baba)", "p2Phone": "05427696998", "score": 30, "streak": 2, "extraSources": [], "exam1": {"rank": 22, "matD": 3, "matY": 16, "matNet": -2.33, "fenD": 6, "fenY": 14, "totalNet": 11.32, "lgsScore": 225.24, "note": "🚨 REKOR SALLAMA: 3 Doğrusu var ama 16 YANLIŞ işaretlemiş! Boş bırakması şart!"}}, {"id": "no_1154", "no": "1154", "name": "RABİA ÇELİK", "p1Name": "İDE ÇELİK (Anne)", "p1Phone": "05431554494", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0, "extraSources": [], "exam1": {"rank": 21, "matD": 1, "matY": 2, "matNet": 0.33, "fenD": 4, "fenY": 9, "totalNet": 8.66, "lgsScore": 229.51, "note": "🌱 Çok yanlış yapmamış (1D 2Y), temel kazanım sorusu seçmeli."}}, {"id": "no_1168", "no": "1168", "name": "RÜMEYSA SIĞIRCI", "p1Name": "ÖZLEM SIĞIRCI (Anne)", "p1Phone": "05444317127", "p2Name": "", "p2Phone": "", "score": 30, "streak": 2, "extraSources": [], "exam1": {"rank": 12, "matD": 5, "matY": 6, "matNet": 3.0, "fenD": 9, "fenY": 10, "totalNet": 25.0, "lgsScore": 280.68, "note": "🔥 5 DOĞRU (3.00 Net)! Yanlışları boş bıraksa 5 nete çıkacak."}}, {"id": "no_9133", "no": "9133", "name": "YAĞMUR ÖZBAKIRCI", "p1Name": "ALİ ÖZBAKIRCI (Baba)", "p1Phone": "05422003865", "p2Name": "ÖZLEM ÖZBAKIRCI (Anne)", "p2Phone": "05426723865", "score": 0, "streak": 0, "extraSources": [], "exam1": {"rank": 99, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 0, "fenY": 0, "totalNet": 0.0, "lgsScore": 0.0, "note": "Denemeye Girmedi"}}, {"id": "no_9134", "no": "9134", "name": "İBRAHİM ELİSA ELCELLO", "p1Name": "İBRAHİM ELCELLO (Baba)", "p1Phone": "05418998843", "p2Name": "", "p2Phone": "", "score": 0, "streak": 0, "extraSources": [], "exam1": {"rank": 99, "matD": 0, "matY": 0, "matNet": 0.0, "fenD": 0, "fenY": 0, "totalNet": 0.0, "lgsScore": 0.0, "note": "Denemeye Girmedi"}}], "dailyRecords": {"2026-10-21": {"no_94": {"hw": null, "review": false, "board": false}, "no_107": {"hw": null, "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": null, "review": false, "board": false}, "no_160": {"hw": null, "review": false, "board": false}, "no_193": {"hw": null, "review": false, "board": false}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": null, "review": false, "board": false}, "no_421": {"hw": null, "review": false, "board": false}, "no_424": {"hw": null, "review": false, "board": false}, "no_505": {"hw": null, "review": false, "board": false}, "no_602": {"hw": null, "review": false, "board": false}, "no_614": {"hw": null, "review": false, "board": false}, "no_727": {"hw": null, "review": false, "board": false}, "no_771": {"hw": null, "review": false, "board": false}, "no_777": {"hw": null, "review": false, "board": false}, "no_805": {"hw": null, "review": false, "board": false}, "no_807": {"hw": null, "review": false, "board": false}, "no_921": {"hw": null, "review": false, "board": false}, "no_957": {"hw": null, "review": false, "board": false}, "no_984": {"hw": null, "review": false, "board": false}, "no_1014": {"hw": null, "review": false, "board": false}, "no_1115": {"hw": null, "review": false, "board": false}, "no_1132": {"hw": null, "review": false, "board": false}, "no_1144": {"hw": null, "review": false, "board": false}, "no_1150": {"hw": null, "review": false, "board": false}, "no_1154": {"hw": null, "review": false, "board": false}, "no_1168": {"hw": null, "review": false, "board": false}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}, "no_9252": {"hw": "full", "review": false, "board": false}}, "2026-10-22": {"no_94": {"hw": "none", "review": false, "board": true}, "no_107": {"hw": "half", "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": "full", "review": false, "board": false}, "no_160": {"hw": "full", "review": false, "board": false}, "no_193": {"hw": "full", "review": false, "board": false}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": "full", "review": false, "board": false}, "no_421": {"hw": "full", "review": false, "board": false}, "no_424": {"hw": "none", "review": false, "board": false}, "no_505": {"hw": "none", "review": false, "board": false}, "no_602": {"hw": "half", "review": false, "board": false}, "no_614": {"hw": "half", "review": false, "board": false}, "no_727": {"hw": "half", "review": false, "board": true}, "no_771": {"hw": "full", "review": false, "board": false}, "no_777": {"hw": "full", "review": false, "board": false}, "no_805": {"hw": "half", "review": false, "board": false}, "no_807": {"hw": "full", "review": false, "board": false}, "no_921": {"hw": "half", "review": false, "board": false}, "no_957": {"hw": "none", "review": false, "board": false}, "no_984": {"hw": "half", "review": false, "board": false}, "no_1014": {"hw": "none", "review": false, "board": false}, "no_1115": {"hw": "full", "review": false, "board": true}, "no_1132": {"hw": "full", "review": false, "board": false}, "no_1144": {"hw": "none", "review": false, "board": false}, "no_1150": {"hw": "half", "review": false, "board": false}, "no_1154": {"hw": "none", "review": false, "board": false}, "no_1168": {"hw": "half", "review": false, "board": false}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}, "no_9252": {"hw": null, "review": false, "board": false}}, "2026-10-23": {"no_94": {"hw": "full", "review": false, "board": false}, "no_107": {"hw": "full", "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": "full", "review": false, "board": true}, "no_160": {"hw": "none", "review": false, "board": false}, "no_193": {"hw": null, "review": false, "board": true}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": "full", "review": false, "board": true}, "no_421": {"hw": "none", "review": false, "board": false}, "no_424": {"hw": "none", "review": false, "board": false}, "no_505": {"hw": "full", "review": false, "board": false}, "no_602": {"hw": "full", "review": false, "board": false}, "no_614": {"hw": "full", "review": false, "board": false}, "no_727": {"hw": "none", "review": false, "board": false}, "no_771": {"hw": "none", "review": false, "board": false}, "no_777": {"hw": "half", "review": false, "board": true}, "no_805": {"hw": "full", "review": false, "board": false}, "no_807": {"hw": "full", "review": false, "board": false}, "no_921": {"hw": "none", "review": false, "board": false}, "no_957": {"hw": "full", "review": false, "board": true}, "no_984": {"hw": "full", "review": false, "board": true}, "no_1014": {"hw": "half", "review": false, "board": false}, "no_1115": {"hw": "none", "review": false, "board": false}, "no_1132": {"hw": "half", "review": false, "board": false}, "no_1144": {"hw": "full", "review": false, "board": true}, "no_1150": {"hw": "full", "review": false, "board": true}, "no_1154": {"hw": null, "review": false, "board": false}, "no_1168": {"hw": "full", "review": false, "board": true}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}, "no_9252": {"hw": null, "review": false, "board": false}}, "2026-10-26": {"no_94": {"hw": null, "review": false, "board": false}, "no_107": {"hw": "full", "review": false, "board": false}, "no_126": {"hw": null, "review": false, "board": false}, "no_158": {"hw": "full", "review": true, "board": false}, "no_160": {"hw": "full", "review": false, "board": false}, "no_193": {"hw": null, "review": false, "board": true}, "no_262": {"hw": null, "review": false, "board": false}, "no_396": {"hw": "full", "review": false, "board": false}, "no_421": {"hw": "full", "review": false, "board": false}, "no_424": {"hw": null, "review": false, "board": false}, "no_505": {"hw": "half", "review": false, "board": true}, "no_602": {"hw": "full", "review": false, "board": true}, "no_614": {"hw": "full", "review": false, "board": false}, "no_727": {"hw": "full", "review": false, "board": false}, "no_771": {"hw": "full", "review": false, "board": false}, "no_777": {"hw": "full", "review": false, "board": true}, "no_805": {"hw": "full", "review": false, "board": false}, "no_807": {"hw": "none", "review": false, "board": false}, "no_921": {"hw": "full", "review": false, "board": false}, "no_957": {"hw": "full", "review": false, "board": false}, "no_984": {"hw": null, "review": false, "board": true}, "no_1014": {"hw": "full", "review": false, "board": true}, "no_1115": {"hw": null, "review": false, "board": false}, "no_1132": {"hw": "full", "review": false, "board": true}, "no_1144": {"hw": "full", "review": false, "board": false}, "no_1150": {"hw": "full", "review": false, "board": false}, "no_1154": {"hw": null, "review": false, "board": true}, "no_1168": {"hw": "full", "review": false, "board": false}, "no_9133": {"hw": null, "review": false, "board": false}, "no_9134": {"hw": null, "review": false, "board": false}, "no_9135": {"hw": null, "review": false, "board": false}}}};
   let appState = {
     className: '8-A',
     currentTopic: 'Üslü İfadeler Kazanım Testi',
@@ -1614,6 +1775,13 @@
     if (!appState.students || appState.students.length === 0 || (appState.updatedAt || 0) < (BAKED_SYNC_STATE.updatedAt || 0)) {
       appState = JSON.parse(JSON.stringify(BAKED_SYNC_STATE));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    } else {
+      // Mevcut öğrencilere exam1 ve extraSources alanlarını ekle
+      appState.students.forEach(st => {
+        const bakedSt = BAKED_SYNC_STATE.students.find(b => b.id === st.id);
+        if (!st.exam1 && bakedSt && bakedSt.exam1) st.exam1 = bakedSt.exam1;
+        if (!Array.isArray(st.extraSources)) st.extraSources = (bakedSt && bakedSt.extraSources) ? bakedSt.extraSources : [];
+      });
     }
 
     if (!appState.currentDate) {
@@ -1997,6 +2165,7 @@
     renderStats();
     renderLeaderboard();
     renderParentTable();
+    renderExamTable();
   }
 
   function renderStats() {
@@ -2095,8 +2264,13 @@
           </div>
           <div class="parent-subline">
             <span class="rank-title-badge">${getRankTitle(student.score)}</span>
+            ${student.exam1 && student.exam1.matD > 0 ? `<span style="color:#38bdf8; font-weight:700;">• 📊 Deneme: ${student.exam1.matD}D ${student.exam1.matY}Y (${student.exam1.matNet} Net)</span>` : ''}
             ${isUnlocked ? `<span>• 👨‍👩‍👧 ${escapeHtml(student.p1Name || 'Veli')}</span>` : ''}
           </div>
+          ${(student.extraSources && student.extraSources.length > 0) ? `
+          <div class="source-badges-line">
+            ${student.extraSources.map(src => `<span class="source-tag">📚 ${escapeHtml(src.book)}${src.count ? ' (' + escapeHtml(src.count) + ')' : ''}</span>`).join('')}
+          </div>` : ''}
         </div>
 
         <div class="score-box">
@@ -2121,6 +2295,9 @@
           </button>
           <button class="chk-btn board ${rec.board ? 'active' : ''}" onclick="toggleExtra('${student.id}', 'board')">
             🙋 Tahta (+5)
+          </button>
+          <button class="chk-btn extra-src ${(student.extraSources && student.extraSources.length > 0) ? 'active' : ''}" onclick="openExtraSourceModal('${student.id}')" title="Ödev dışında ekstra kaynaktan soru çözdü (+15 Puan)">
+            📚 Ekstra Kaynak (+15)
           </button>
         </div>
 
@@ -2206,7 +2383,10 @@
     }
 
     const reviewAdd = rec.review ? ` Ayrıca günlük konu tekrarını da başarıyla yapmıştır 📘.` : '';
-    const msg = `Sayın *${parentName}*, 8-A sınıfı öğrencimiz *${student.name}*, ${dateStr} tarihli kontrolümüzde ${statusText}${reviewAdd} Güncel Başarı Puanı: *${student.score}*. İyi günler dilerim.`;
+    const extraSrcAdd = (student.extraSources && student.extraSources.length > 0)
+      ? ` Ödev dışında *${student.extraSources.map(x => x.book + (x.count ? ' ' + x.count : '')).join(', ')}* kaynağından ekstra soru çözerek +15 bonus puan kazanmıştır 📚👏.`
+      : '';
+    const msg = `Sayın *${parentName}*, 8-A sınıfı öğrencimiz *${student.name}*, ${dateStr} tarihli kontrolümüzde ${statusText}${reviewAdd}${extraSrcAdd} Güncel Başarı Puanı: *${student.score}*. İyi günler dilerim.`;
 
     let phone = rawPhone.replace(/\D/g, '');
     if (phone.startsWith('0')) phone = '90' + phone.slice(1);
@@ -2546,6 +2726,160 @@
     renderAll();
     populateRedeemSelect();
     document.getElementById('redeemStudentSelect').value = studentId;
+  }
+
+
+  // EKSTRA KAYNAK (+15 PUAN) FONKSİYONLARI
+  function openExtraSourceModal(studentId) {
+    if (!requireTeacherAuth()) return;
+    const st = appState.students.find(s => s.id === studentId);
+    if (!st) return;
+
+    document.getElementById('extraSourceStudentId').value = st.id;
+    document.getElementById('extraSourceStudentName').textContent = `#${st.no || ''} ${st.name}`;
+    document.getElementById('extraSourceBookInput').value = '';
+    document.getElementById('extraSourceCountInput').value = '';
+
+    renderExistingSourcesInModal(st);
+    document.getElementById('extraSourceModal').classList.add('show');
+  }
+
+  function selectQuickPub(pubName) {
+    document.getElementById('extraSourceBookInput').value = pubName;
+    document.getElementById('extraSourceCountInput').focus();
+  }
+
+  function renderExistingSourcesInModal(st) {
+    const box = document.getElementById('existingSourcesContainer');
+    if (!st.extraSources || st.extraSources.length === 0) {
+      box.innerHTML = '<div style="font-size:12px; color:#64748b;">Henüz kayıtlı ekstra kaynak yok.</div>';
+      return;
+    }
+    box.innerHTML = '<div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Çözdüğü Ekstra Kaynaklar:</div>' +
+      st.extraSources.map((src, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:8px; margin-bottom:4px; font-size:12px;">
+          <span>📚 <b>${escapeHtml(src.book)}</b> ${src.count ? '(' + escapeHtml(src.count) + ')' : ''} <span style="color:#94a3b8;">- ${escapeHtml(src.date || '')}</span></span>
+          <button class="chk-btn none" style="padding:3px 8px; font-size:11px;" onclick="removeExtraSource('${st.id}', ${idx})">Sil (-15p)</button>
+        </div>
+      `).join('');
+  }
+
+  function saveExtraSourceEntry() {
+    if (!requireTeacherAuth()) return;
+    const id = document.getElementById('extraSourceStudentId').value;
+    const book = document.getElementById('extraSourceBookInput').value.trim();
+    const count = document.getElementById('extraSourceCountInput').value.trim();
+
+    if (!book) {
+      alert('Lütfen öğrencinin çözdüğü kaynak veya yayın adını seçin/yazın!');
+      return;
+    }
+
+    const st = appState.students.find(s => s.id === id);
+    if (!st) return;
+
+    if (!Array.isArray(st.extraSources)) st.extraSources = [];
+    st.extraSources.push({
+      book,
+      count,
+      date: appState.currentDate
+    });
+
+    st.score += 15;
+    playTone('success');
+    saveState();
+    renderAll();
+    closeModal('extraSourceModal');
+    showToast(`📚 ${st.name} ekstra kaynak (${book}) çözdüğü için +15 Puan kazandı!`);
+  }
+
+  function removeExtraSource(studentId, idx) {
+    if (!requireTeacherAuth()) return;
+    const st = appState.students.find(s => s.id === studentId);
+    if (!st || !st.extraSources) return;
+    st.extraSources.splice(idx, 1);
+    st.score -= 15;
+    saveState();
+    renderAll();
+    renderExistingSourcesInModal(st);
+    showToast('Ekstra kaynak kaydı silindi (-15p).');
+  }
+
+  // DENEME ANALİZİ VE ÖDÜL FONKSİYONLARI
+  function renderExamTable() {
+    const tbody = document.getElementById('examTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const sorted = [...appState.students].sort((a, b) => {
+      const rA = (a.exam1 && a.exam1.rank) ? a.exam1.rank : 99;
+      const rB = (b.exam1 && b.exam1.rank) ? b.exam1.rank : 99;
+      return rA - rB;
+    });
+
+    sorted.forEach(s => {
+      const ex = s.exam1 || { rank: 99, matD: 0, matY: 0, matNet: 0, fenD: 0, fenY: 0, lgsScore: 0, note: 'Girmedi' };
+      const potentialNet = ex.matD; // Yanlışları boş bıraksaydı alacağı net
+      let netBadgeClass = 'exam-badge-warn';
+      if (ex.matD >= 5) netBadgeClass = 'exam-badge-good';
+      else if (ex.matNet < 0) netBadgeClass = 'exam-badge-bad';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${ex.rank < 99 ? ex.rank + '.' : '-'}</b></td>
+        <td>
+          <b>#${escapeHtml(s.no || '')} ${escapeHtml(s.name)}</b>
+          ${ex.examRewarded ? '<span style="background:#10b981; color:#fff; font-size:10px; padding:1px 6px; border-radius:6px; margin-left:6px;">🏅 Ödül Aldı</span>' : ''}
+        </td>
+        <td><b style="color:#10b981; font-size:15px;">${ex.matD} D</b></td>
+        <td><b style="color:#ef4444; font-size:15px;">${ex.matY} Y</b></td>
+        <td><span class="${netBadgeClass}">${ex.matNet} Net</span></td>
+        <td><b style="color:#facc15;">${potentialNet},00 Net</b></td>
+        <td>${ex.fenD}D / ${ex.fenY}Y</td>
+        <td><b>${ex.lgsScore ? ex.lgsScore.toFixed(1) : '-'}</b></td>
+        <td style="font-size:12px; color:#e2e8f0; max-width:300px;">${escapeHtml(ex.note || '')}</td>
+        <td class="teacher-only">
+          <div style="display:flex; gap:5px;">
+            <button class="chk-btn full" onclick="giveExamBonus('${s.id}', 15, 'Deneme Çaba/Başarı Ödülü')">🏅 +15p</button>
+            <button class="chk-btn extra-src" onclick="giveExamBonus('${s.id}', 25, 'Deneme 5+ Doğru / Liderlik Ödülü')">🌟 +25p</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function giveExamBonus(studentId, pts, reason) {
+    if (!requireTeacherAuth()) return;
+    const st = appState.students.find(s => s.id === studentId);
+    if (!st) return;
+    st.score += pts;
+    if (!st.exam1) st.exam1 = {};
+    st.exam1.examRewarded = true;
+    playTone('success');
+    saveState();
+    renderAll();
+    showToast(`🏅 ${st.name} (${reason}) ile +${pts} Puan kazandı!`);
+  }
+
+  function rewardTopExamPerformers() {
+    if (!requireTeacherAuth()) return;
+    let count = 0;
+    appState.students.forEach(s => {
+      if (s.exam1 && s.exam1.matD >= 4 && !s.exam1.examRewarded) {
+        s.score += 15;
+        s.exam1.examRewarded = true;
+        count++;
+      }
+    });
+    if (count === 0) {
+      showToast('4+ doğru yapan öğrencilere zaten deneme ödülü verilmiş!');
+      return;
+    }
+    playTone('success');
+    saveState();
+    renderAll();
+    showToast(`🏆 Denemede 4 ve üzeri doğru yapan ${count} öğrenciye +15'er Başarı Puanı eklendi!`);
   }
 
   // Yardımcılar
