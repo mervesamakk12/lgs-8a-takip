@@ -2,7 +2,7 @@
   "className": "8-A",
   "currentTopic": "Üslü İfadeler İlk 50 soru",
   "currentDate": "2026-10-26",
-  "updatedAt": 1793123082781,
+  "updatedAt": 1793123087781,
   "students": [
     {
       "id": "no_94",
@@ -25,6 +25,17 @@
         "totalNet": 27.67,
         "lgsScore": 283.09,
         "note": "🔥 5 DOĞRU! Ancak 7 yanlış salladığı için neti yarıya düşmüş."
+      },
+      "mebi1": {
+        "matD": 5,
+        "matY": 3,
+        "matB": 12,
+        "matNet": 4.0,
+        "fenNet": -0.33,
+        "turNet": -2.67,
+        "puan": 222.01,
+        "diff": 1.33,
+        "note": "🚀 SÜPER SIÇRAMA! İSEM'den +1.33 Net artışla 4.0 Nete çıktı (5D 3Y)!"
       }
     },
     {
@@ -48,6 +59,17 @@
         "totalNet": 34.99,
         "lgsScore": 299.77,
         "note": "⚠️ Türkçe 14D, Din 10D çok iyi; Matematikte bilmediğini boş bırakmalı."
+      },
+      "mebi1": {
+        "matD": 2,
+        "matY": 3,
+        "matB": 15,
+        "matNet": 1.0,
+        "fenNet": 2.67,
+        "turNet": 3.0,
+        "puan": 247.97,
+        "diff": 1.67,
+        "note": "🌟 BÜYÜK GELİŞİM! Sallamayı azalttı ve netini +1.67 Net artırdı!"
       }
     },
     {
@@ -71,6 +93,17 @@
         "totalNet": 0.0,
         "lgsScore": 0.0,
         "note": "Denemeye Girmedi"
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 0.0,
+        "turNet": 0.0,
+        "puan": 0.0,
+        "diff": 0.0,
+        "note": "Sınava Girmedi"
       }
     },
     {
@@ -94,6 +127,17 @@
         "totalNet": 4.67,
         "lgsScore": 215.88,
         "note": "🚨 Ödev lideri (50p) ama denemede 10 yanlış sallamış! Sadece bildiği 5 soruyu çözmeli."
+      },
+      "mebi1": {
+        "matD": 4,
+        "matY": 7,
+        "matB": 9,
+        "matNet": 1.67,
+        "fenNet": 3.33,
+        "turNet": 0.67,
+        "puan": 220.91,
+        "diff": 3.0,
+        "note": "🌟 BÜYÜK GELİŞİM! Sallamayı azalttı ve netini +3.0 Net artırdı!"
       }
     },
     {
@@ -117,6 +161,17 @@
         "totalNet": 42.67,
         "lgsScore": 341.65,
         "note": "🌟 Sınıf 1.'si & Mat Lideri! 5 yanlışı azaltırsa 8+ nete çıkar."
+      },
+      "mebi1": {
+        "matD": 5,
+        "matY": 2,
+        "matB": 13,
+        "matNet": 4.33,
+        "fenNet": 2.0,
+        "turNet": 2.0,
+        "puan": 244.35,
+        "diff": -2.0,
+        "note": "👑 SINIF ZİRVESİ! 5 Doğru 2 Yanlış (4.33 Net) ile lider!"
       }
     },
     {
@@ -140,6 +195,17 @@
         "totalNet": 9.0,
         "lgsScore": 223.26,
         "note": "🚨 6 DOĞRU ile en çok doğru yapan 2. öğrenci! Ama 10 yanlış sallayarak kendine yazık etmiş!"
+      },
+      "mebi1": {
+        "matD": 4,
+        "matY": 8,
+        "matB": 8,
+        "matNet": 1.33,
+        "fenNet": -1.0,
+        "turNet": -0.67,
+        "puan": 208.59,
+        "diff": -1.34,
+        "note": "⚠️ 4 Doğrusu var ama hâlâ 8 yanlış işaretlemiş. Yanlışları kesmeli!"
       }
     },
     {
@@ -163,6 +229,17 @@
         "totalNet": 0.0,
         "lgsScore": 0.0,
         "note": "Denemeye Girmedi"
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 0.0,
+        "turNet": 0.0,
+        "puan": 0.0,
+        "diff": 0.0,
+        "note": "Sınava Girmedi"
       }
     },
     {
@@ -186,6 +263,17 @@
         "totalNet": 31.01,
         "lgsScore": 290.46,
         "note": "⏱️ SÜRE TUZAĞI: Fen 10D yaptı, Matematik kitapçığına hiç dokunmadı (Tamamen Boş)!"
+      },
+      "mebi1": {
+        "matD": 2,
+        "matY": 0,
+        "matB": 18,
+        "matNet": 2.0,
+        "fenNet": 2.33,
+        "turNet": 3.67,
+        "puan": 239.96,
+        "diff": 2.0,
+        "note": "🌟 BÜYÜK GELİŞİM! Sallamayı azalttı ve netini +2.0 Net artırdı!"
       }
     },
     {
@@ -209,6 +297,17 @@
         "totalNet": 27.67,
         "lgsScore": 285.81,
         "note": "👍 3 Doğru var, Fen 11D iyi; Matematikte sallamayı bırakmalı."
+      },
+      "mebi1": {
+        "matD": 1,
+        "matY": 6,
+        "matB": 13,
+        "matNet": -1.0,
+        "fenNet": 3.33,
+        "turNet": -1.0,
+        "puan": 215.67,
+        "diff": -2.33,
+        "note": "⚠️ 1 Doğrusu var ama hâlâ 6 yanlış işaretlemiş. Yanlışları kesmeli!"
       }
     },
     {
@@ -232,6 +331,17 @@
         "totalNet": -10.0,
         "lgsScore": 161.51,
         "note": "❌ Tüm denemede 60 yanlış işaretlemiş, birebir rehberlik gerekli."
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 1,
+        "matB": 19,
+        "matNet": -0.33,
+        "fenNet": 1.33,
+        "turNet": -2.0,
+        "puan": 203.48,
+        "diff": -0.33,
+        "note": "👍 0D 1Y (19 Boş) - Sallamayı kontrol altına aldı."
       }
     },
     {
@@ -255,6 +365,17 @@
         "totalNet": 22.67,
         "lgsScore": 264.76,
         "note": "👍 3 Doğru yakalamış, 5 yanlışı boş bıraksa 3 net!"
+      },
+      "mebi1": {
+        "matD": 3,
+        "matY": 3,
+        "matB": 14,
+        "matNet": 2.0,
+        "fenNet": 5.67,
+        "turNet": 0.33,
+        "puan": 238.41,
+        "diff": 0.67,
+        "note": "📈 Netini +0.67 artırdı (3D 3Y, 14 Boş)."
       }
     },
     {
@@ -278,6 +399,17 @@
         "totalNet": 20.34,
         "lgsScore": 256.6,
         "note": "👍 3 Doğru yapmış, yanlış işaretlemeyi azaltmalı."
+      },
+      "mebi1": {
+        "matD": 2,
+        "matY": 4,
+        "matB": 14,
+        "matNet": 0.67,
+        "fenNet": 0.33,
+        "turNet": 3.0,
+        "puan": 229.97,
+        "diff": -0.66,
+        "note": "👍 2D 4Y (14 Boş) - Sallamayı kontrol altına aldı."
       }
     },
     {
@@ -301,6 +433,17 @@
         "totalNet": 31.0,
         "lgsScore": 290.71,
         "note": "👍 4 Doğru güzel başlangıç! 6 yanlışı boş bıraksa 4.00 net olacaktı."
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 0.0,
+        "turNet": 0.0,
+        "puan": 0.0,
+        "diff": 0.0,
+        "note": "Sınava Girmedi"
       }
     },
     {
@@ -324,6 +467,17 @@
         "totalNet": 0.0,
         "lgsScore": 0.0,
         "note": "Denemeye Girmedi"
+      },
+      "mebi1": {
+        "matD": 1,
+        "matY": 0,
+        "matB": 19,
+        "matNet": 1.0,
+        "fenNet": 3.0,
+        "turNet": -2.33,
+        "puan": 220.32,
+        "diff": 1.0,
+        "note": "🎯 SIFIR HATA! 1 Doğru 0 Yanlış! Boş bırakma taktiğini harika uyguladı!"
       }
     },
     {
@@ -347,6 +501,17 @@
         "totalNet": 21.68,
         "lgsScore": 252.24,
         "note": "⚠️ Fen 11D güzel ama Matematikte 7 yanlış sallamış."
+      },
+      "mebi1": {
+        "matD": 4,
+        "matY": 3,
+        "matB": 13,
+        "matNet": 3.0,
+        "fenNet": -0.33,
+        "turNet": 2.33,
+        "puan": 229.61,
+        "diff": 4.33,
+        "note": "🚀 SÜPER SIÇRAMA! İSEM'den +4.33 Net artışla 3.0 Nete çıktı (4D 3Y)!"
       }
     },
     {
@@ -370,6 +535,17 @@
         "totalNet": 26.66,
         "lgsScore": 274.77,
         "note": "🌟 5 DOĞRU (3.33 Net) ile Matematik netinde sınıf 2.'si!"
+      },
+      "mebi1": {
+        "matD": 1,
+        "matY": 1,
+        "matB": 18,
+        "matNet": 0.67,
+        "fenNet": 1.33,
+        "turNet": -0.33,
+        "puan": 216.33,
+        "diff": -2.66,
+        "note": "👍 1D 1Y (18 Boş) - Sallamayı kontrol altına aldı."
       }
     },
     {
@@ -393,6 +569,17 @@
         "totalNet": 28.66,
         "lgsScore": 285.34,
         "note": "⚠️ 4 Doğru yapmış ama 7 yanlış yüzünden neti 1.67'ye düşmüş."
+      },
+      "mebi1": {
+        "matD": 4,
+        "matY": 4,
+        "matB": 12,
+        "matNet": 2.67,
+        "fenNet": 2.67,
+        "turNet": 0.0,
+        "puan": 237.31,
+        "diff": 1.0,
+        "note": "📈 Netini +1.0 artırdı (4D 4Y, 12 Boş)."
       }
     },
     {
@@ -416,6 +603,17 @@
         "totalNet": 25.33,
         "lgsScore": 268.25,
         "note": "⚠️ 5 yanlış işaretlemiş, sadece emin olduğu kazanım sorularını çözmeli."
+      },
+      "mebi1": {
+        "matD": 1,
+        "matY": 5,
+        "matB": 14,
+        "matNet": -0.67,
+        "fenNet": 1.0,
+        "turNet": 3.33,
+        "puan": 225.54,
+        "diff": 0.0,
+        "note": "👍 1D 5Y (14 Boş) - Sallamayı kontrol altına aldı."
       }
     },
     {
@@ -439,6 +637,17 @@
         "totalNet": 38.0,
         "lgsScore": 316.86,
         "note": "⏱️ SÜRE TUZAĞI: Türkçe 16D, Fen 11D yaptı ama Matematiğe hiç geçemedi!"
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 1.67,
+        "turNet": 3.67,
+        "puan": 218.35,
+        "diff": 0.33,
+        "note": "📈 Netini +0.33 artırdı (0D 0Y, 20 Boş)."
       }
     },
     {
@@ -462,6 +671,17 @@
         "totalNet": 23.34,
         "lgsScore": 259.21,
         "note": "👍 2 Doğru var, kazanım tekrarlarıyla 5 doğruyu hedeflemeli."
+      },
+      "mebi1": {
+        "matD": 4,
+        "matY": 1,
+        "matB": 15,
+        "matNet": 3.67,
+        "fenNet": 6.0,
+        "turNet": 6.33,
+        "puan": 286.33,
+        "diff": 3.0,
+        "note": "🚀 SÜPER SIÇRAMA! İSEM'den +3.0 Net artışla 3.67 Nete çıktı (4D 1Y)!"
       }
     },
     {
@@ -485,6 +705,17 @@
         "totalNet": 30.33,
         "lgsScore": 280.58,
         "note": "⚠️ Türkçe 14D, Din 10D harika ama Matematikte 6 yanlış sallamış."
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 5.67,
+        "turNet": 5.33,
+        "puan": 253.24,
+        "diff": 1.0,
+        "note": "📈 Netini +1.0 artırdı (0D 0Y, 20 Boş)."
       }
     },
     {
@@ -508,6 +739,17 @@
         "totalNet": 29.66,
         "lgsScore": 286.47,
         "note": "👍 4 Doğru yakalamış! Emin olmadığı 6 soruyu boş bırakmalı."
+      },
+      "mebi1": {
+        "matD": 1,
+        "matY": 0,
+        "matB": 19,
+        "matNet": 1.0,
+        "fenNet": 4.67,
+        "turNet": 1.33,
+        "puan": 240.43,
+        "diff": -1.0,
+        "note": "🎯 SIFIR HATA! 1 Doğru 0 Yanlış! Boş bırakma taktiğini harika uyguladı!"
       }
     },
     {
@@ -531,6 +773,17 @@
         "totalNet": 28.33,
         "lgsScore": 286.24,
         "note": "👏 4 Doğru 3 Yanlış (3.00 Net) - Sınıftaki en dengeli matematik netlerinden!"
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 3.0,
+        "turNet": 2.33,
+        "puan": 226.67,
+        "diff": -3.0,
+        "note": "⏱️ Matematikte tüm soruları (20B) boş bırakmış, kolay soru seçmeli."
       }
     },
     {
@@ -554,6 +807,17 @@
         "totalNet": 43.34,
         "lgsScore": 327.67,
         "note": "⏱️ SÜRE TUZAĞI: Fen'den 16D 3Y yaptı ama Matematiğe hiç vakit bırakmadı!"
+      },
+      "mebi1": {
+        "matD": 1,
+        "matY": 1,
+        "matB": 18,
+        "matNet": 0.67,
+        "fenNet": 7.0,
+        "turNet": 7.0,
+        "puan": 280.01,
+        "diff": 1.0,
+        "note": "📈 Netini +1.0 artırdı (1D 1Y, 18 Boş)."
       }
     },
     {
@@ -577,6 +841,17 @@
         "totalNet": 23.67,
         "lgsScore": 271.49,
         "note": "🚨 6 DOĞRU ile en çok doğru yapan 2. öğrenci! Ama 10 yanlışla 3.33 netini çöpe atmış!"
+      },
+      "mebi1": {
+        "matD": 3,
+        "matY": 9,
+        "matB": 8,
+        "matNet": 0.0,
+        "fenNet": 0.67,
+        "turNet": 1.0,
+        "puan": 211.56,
+        "diff": -2.67,
+        "note": "⚠️ 3 Doğrusu var ama hâlâ 9 yanlış işaretlemiş. Yanlışları kesmeli!"
       }
     },
     {
@@ -600,6 +875,17 @@
         "totalNet": 11.32,
         "lgsScore": 225.24,
         "note": "🚨 REKOR SALLAMA: 3 Doğrusu var ama 16 YANLIŞ işaretlemiş! Boş bırakması şart!"
+      },
+      "mebi1": {
+        "matD": 2,
+        "matY": 1,
+        "matB": 17,
+        "matNet": 1.67,
+        "fenNet": -3.67,
+        "turNet": 1.33,
+        "puan": 202.78,
+        "diff": 4.0,
+        "note": "🌟 BÜYÜK GELİŞİM! Sallamayı azalttı ve netini +4.0 Net artırdı!"
       }
     },
     {
@@ -623,6 +909,17 @@
         "totalNet": 8.66,
         "lgsScore": 229.51,
         "note": "🌱 Çok yanlış yapmamış (1D 2Y), temel kazanım sorusu seçmeli."
+      },
+      "mebi1": {
+        "matD": 3,
+        "matY": 0,
+        "matB": 17,
+        "matNet": 3.0,
+        "fenNet": 6.33,
+        "turNet": 4.67,
+        "puan": 265.94,
+        "diff": 2.67,
+        "note": "🚀 SÜPER SIÇRAMA! İSEM'den +2.67 Net artışla 3.0 Nete çıktı (3D 0Y)!"
       }
     },
     {
@@ -646,6 +943,17 @@
         "totalNet": 25.0,
         "lgsScore": 280.68,
         "note": "🔥 5 DOĞRU (3.00 Net)! Yanlışları boş bıraksa 5 nete çıkacak."
+      },
+      "mebi1": {
+        "matD": 4,
+        "matY": 4,
+        "matB": 12,
+        "matNet": 2.67,
+        "fenNet": -2.0,
+        "turNet": 5.33,
+        "puan": 243.75,
+        "diff": -0.33,
+        "note": "👍 4D 4Y (12 Boş) - Sallamayı kontrol altına aldı."
       }
     },
     {
@@ -669,6 +977,17 @@
         "totalNet": 0.0,
         "lgsScore": 0.0,
         "note": "Denemeye Girmedi"
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 0.0,
+        "turNet": 0.0,
+        "puan": 0.0,
+        "diff": 0.0,
+        "note": "Sınava Girmedi"
       }
     },
     {
@@ -692,6 +1011,17 @@
         "totalNet": 0.0,
         "lgsScore": 0.0,
         "note": "Denemeye Girmedi"
+      },
+      "mebi1": {
+        "matD": 0,
+        "matY": 0,
+        "matB": 20,
+        "matNet": 0.0,
+        "fenNet": 0.0,
+        "turNet": 0.0,
+        "puan": 0.0,
+        "diff": 0.0,
+        "note": "Sınava Girmedi"
       }
     }
   ],
